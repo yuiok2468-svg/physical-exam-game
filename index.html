@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>콩닥콩닥 진찰실 · CPX 신체진찰</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E4F3EC; --paper:#FFFFFF; --ink:#23403A; --muted:#5C786F; --line:#CDE4DA;
+  --mint:#8FD3BC; --mint-d:#2F8C71; --coral-d:#E0607A; --sky:#8CC8EA;
+  --butter:#FFE59E; --alert:#D24B4B; --alert-bg:#FDECEC; --ok-bg:#E8F7F0; --glow:#FFB84D;
+  --shadow:0 3px 0 rgba(35,64,58,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15231F; --paper:#1E312B; --ink:#E3F1EB; --muted:#9BB6AC; --line:#2F4A41;
+    --mint-d:#4FB894; --alert:#FF8078; --alert-bg:#3A2224; --ok-bg:#1C3A30; --shadow:0 3px 0 rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15231F; --paper:#1E312B; --ink:#E3F1EB; --muted:#9BB6AC; --line:#2F4A41;
+  --mint-d:#4FB894; --alert:#FF8078; --alert-bg:#3A2224; --ok-bg:#1C3A30; --shadow:0 3px 0 rgba(0,0,0,.35);
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.55;
+  background-image:radial-gradient(circle at 1px 1px, rgba(47,140,113,.12) 1.5px, transparent 0);background-size:22px 22px}
+h1,h2,h3,button{font-family:"Jua","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-weight:400}
+button{cursor:pointer;border:none;color:inherit;font-size:1rem}
+button:disabled{opacity:.55;cursor:default}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--glow);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:16px}
+.screen{display:none}.screen.on{display:block}
+.btn{background:var(--mint-d);color:#fff;padding:12px 22px;border-radius:999px;box-shadow:var(--shadow);font-size:1.1rem}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn.ghost{background:var(--paper);color:var(--ink);border:2px solid var(--line)}
+.btn.coral{background:var(--coral-d)}
+.btn.small{padding:7px 13px;font-size:.95rem}
+.center{text-align:center}
+
+/* start */
+.title-card{text-align:center;padding:14px 8px 4px}
+.title-card h1{font-size:clamp(2.2rem,7vw,3.4rem);margin:0;line-height:1.1;color:var(--mint-d)}
+.title-card p{color:var(--muted);margin:.4rem 0 0}
+.hero-patient{width:130px;max-width:40vw;margin:0 auto;display:block}
+.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0 8px;align-items:center}
+.seg{display:inline-flex;background:var(--paper);border:2px solid var(--line);border-radius:999px;padding:3px}
+.seg button{background:none;padding:8px 16px;border-radius:999px;font-size:1rem}
+.seg button[aria-pressed="true"]{background:var(--mint-d);color:#fff}
+.mode-desc{text-align:center;color:var(--muted);font-size:.9rem;margin:0 auto 10px;max-width:560px}
+.sys{margin:18px 0 0}
+.sys h3{margin:0 0 8px;font-size:1.15rem;color:var(--mint-d)}
+.cases{display:flex;flex-wrap:wrap;gap:8px}
+.case-chip{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:8px 12px;font-size:1rem;display:flex;flex-direction:column;align-items:flex-start;min-width:110px;box-shadow:var(--shadow)}
+.case-chip small{font-family:"Gowun Dodum",sans-serif;font-size:.75rem;color:var(--muted)}
+.case-chip:hover{border-color:var(--mint)}
+.case-chip.done small{color:var(--mint-d)}
+
+/* case card */
+.clip{max-width:540px;margin:20px auto;background:var(--paper);border-radius:18px;border:2px solid var(--line);padding:26px 22px 22px;position:relative;box-shadow:var(--shadow)}
+.clip::before{content:"";position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:110px;height:26px;background:var(--sky);border-radius:10px}
+.clip h2{margin:0 0 2px;font-size:1.6rem}
+.clip .who{color:var(--muted);margin-bottom:12px}
+.cc{display:inline-block;background:var(--butter);color:#4A3A10;border-radius:10px;padding:2px 10px;font-family:"Jua",sans-serif}
+.story{margin:12px 0;padding:12px 14px;background:var(--bg);border-radius:12px}
+.vitals{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 18px}
+.vitals div{background:var(--bg);border-radius:10px;padding:6px;text-align:center}
+.vitals b{display:block;font-family:"Jua",sans-serif;font-size:1.05rem}
+.vitals span{font-size:.8rem;color:var(--muted)}
+.task{font-size:.95rem;color:var(--muted)}
+.sens{font-size:.85rem;color:var(--muted);border-left:3px solid var(--line);padding-left:8px}
+
+/* play */
+.topbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{background:var(--paper);border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-family:"Jua",sans-serif;font-size:.95rem}
+.timer{font-family:"Jua",sans-serif;font-size:1.3rem;min-width:64px;text-align:center}
+.timer.warn{color:var(--alert)}
+.spacer{flex:1}
+.play{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px}
+@media (max-width:820px){.play{grid-template-columns:1fr}}
+.stage{background:var(--paper);border:2px solid var(--line);border-radius:24px;position:relative;padding:12px;overflow:hidden}
+.curtain{position:absolute;inset:0 0 auto 0;height:18px;background:repeating-linear-gradient(90deg,var(--mint) 0 18px,#A8DDCB 18px 36px);opacity:.8}
+svg.patient{display:block;width:100%;max-height:56vh;margin:18px auto 0}
+.hint-line{text-align:center;color:var(--muted);min-height:1.6em;font-size:.95rem;padding:0 6px}
+.tools{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.bubble{position:absolute;max-width:64%;border:2px solid #23403A;border-radius:16px;padding:8px 12px;font-size:.93rem;opacity:0;transform:scale(.92);transition:opacity .2s, transform .2s;pointer-events:none;z-index:3;color:#23403A}
+.bubble.show{opacity:1;transform:scale(1)}
+.bubble.doc{left:12px;bottom:150px;background:#EAF4FB}
+.bubble.pt{right:12px;top:30px;background:#FFF1F3}
+.bubble .who{font-family:"Jua",sans-serif;font-size:.78rem;display:block;opacity:.7}
+
+.part{cursor:pointer;transition:filter .15s}
+.part:hover,.part:focus-visible{filter:drop-shadow(0 0 7px var(--glow)) drop-shadow(0 0 2px var(--glow));outline:none}
+.hot{fill:rgba(255,255,255,0);stroke:transparent;stroke-width:3;stroke-dasharray:6 5}
+.part:hover .hot,.part:focus-visible .hot{stroke:var(--glow)}
+
+.chart{background:var(--paper);border:2px solid var(--line);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:10px;max-height:82vh;overflow:auto}
+.chart h3{margin:0;font-size:1.2rem}
+.chart .sub{color:var(--muted);font-size:.85rem;margin-top:-6px}
+.mnemo{background:var(--butter);color:#4A3A10;border-radius:12px;padding:8px 10px;font-size:.88rem}
+.log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.log li{border-left:4px solid var(--mint);background:var(--bg);padding:8px 10px;border-radius:0 10px 10px 0;font-size:.93rem}
+.log li b{font-family:"Jua",sans-serif;font-weight:400}
+.log li.ab{border-left-color:var(--alert);background:var(--alert-bg)}
+.log li.extra{border-left-color:var(--muted)}
+.log .note{display:block;color:var(--muted);font-size:.84rem;margin-top:2px}
+.tag{font-size:.75rem;margin-left:6px;color:var(--muted)}
+.empty{color:var(--muted);font-size:.95rem}
+.check{display:flex;flex-wrap:wrap;gap:4px 6px;font-size:.84rem}
+.check span{color:var(--muted);background:var(--bg);border-radius:8px;padding:1px 7px}
+.check span.done{color:var(--mint-d);text-decoration:line-through}
+
+/* sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(20,40,35,.35);display:none;z-index:10}
+.sheet-bg.on{display:block}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:min(580px,100%);background:var(--paper);border-radius:24px 24px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));z-index:11;transition:transform .22s ease;max-height:82vh;overflow:auto}
+.sheet.on{transform:translate(-50%,0)}
+.sheet h3{margin:0 0 10px;font-size:1.35rem}
+.exam-row{border:2px solid var(--line);border-radius:14px;padding:8px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.exam-row .nm{font-family:"Jua",sans-serif;font-size:1.02rem;flex:1;min-width:150px}
+.exam-row .btns{display:flex;gap:6px}
+.exam-row .fd{flex-basis:100%;font-size:.88rem;color:var(--muted)}
+.exam-row.done{background:var(--ok-bg)}
+
+/* dx */
+.dx-list{display:grid;gap:10px;max-width:560px;margin:16px auto}
+.dx-list button{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:14px;font-size:1.08rem;text-align:left;box-shadow:var(--shadow)}
+.dx-list button:hover{border-color:var(--mint)}
+
+/* result */
+.score-big{font-family:"Jua",sans-serif;font-size:clamp(3.5rem,14vw,6rem);line-height:1;color:var(--mint-d);margin:10px 0 0}
+.score-big small{font-size:.35em;color:var(--muted)}
+.bars{max-width:560px;margin:18px auto;display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:110px 1fr 70px;gap:10px;align-items:center;font-size:.95rem}
+.track{height:14px;background:var(--line);border-radius:99px;overflow:hidden}
+.fill{height:100%;background:var(--mint-d);border-radius:99px;width:0;transition:width .8s ease}
+.bar .v{font-family:"Jua",sans-serif;text-align:right}
+.panel{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:16px 18px;max-width:780px;margin:14px auto}
+.panel h3{margin:0 0 8px}
+.panel p{margin:.35rem 0}
+.seq{font-size:.92rem;background:var(--bg);border-radius:12px;padding:8px 10px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:560px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:"Jua",sans-serif;font-weight:400;color:var(--muted)}
+td.miss{color:var(--alert)}
+tr.abrow td:nth-child(3){color:var(--alert)}
+.row-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 30px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="s-start" class="screen on">
+  <div class="title-card">
+    <svg class="hero-patient" viewBox="0 0 320 460" aria-hidden="true"><use href="#patient-sym"/></svg>
+    <h1>콩닥콩닥 진찰실</h1>
+    <p>CPX 필살 암기법 58개 증례 · <span id="scn-count"></span>개 시나리오로 신체진찰 연습</p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="모드">
+      <button data-mode="learn" aria-pressed="true">📘 학습 모드</button>
+      <button data-mode="exam" aria-pressed="false">⏱️ 시험 모드</button>
+    </div>
+    <button class="btn small" id="random">🎲 랜덤 증례</button>
+  </div>
+  <p class="mode-desc" id="mode-desc"></p>
+  <div id="case-groups"></div>
+</section>
+
+<section id="s-case" class="screen">
+  <div class="clip">
+    <h2 id="c-name"></h2>
+    <div class="who" id="c-who"></div>
+    <div>주호소 <span class="cc" id="c-cc"></span></div>
+    <div class="story" id="c-story"></div>
+    <div class="vitals" id="c-vitals"></div>
+    <p class="task" id="c-task"></p>
+    <p class="sens" id="c-sens" hidden>민감한 주제를 다루는 증례예요. 환자 반응은 차분하게 나와요.</p>
+    <div class="row-btns" style="margin:12px 0 0">
+      <button class="btn ghost" id="back-list">목록으로</button>
+      <button class="btn" id="go-play">진찰 시작</button>
+    </div>
+  </div>
+</section>
+
+<section id="s-play" class="screen">
+  <div class="topbar">
+    <span class="chip" id="p-mode"></span>
+    <span class="chip" id="p-case"></span>
+    <span class="spacer"></span>
+    <span class="timer" id="p-timer">0:00</span>
+    <button class="btn coral small" id="finish">진찰 끝내기</button>
+  </div>
+  <div class="play">
+    <div class="stage">
+      <div class="curtain"></div>
+      <div class="bubble doc" id="b-doc"><span class="who">나 (의사)</span><span class="tx"></span></div>
+      <div class="bubble pt" id="b-pt"><span class="who" id="b-pt-name">환자</span><span class="tx"></span></div>
+      <svg class="patient" id="patient" viewBox="0 0 320 460" role="group" aria-label="환자. 진찰할 부위를 누르세요"></svg>
+      <div class="hint-line" id="hint-line">진찰할 부위를 눌러 보세요</div>
+      <div class="tools">
+        <button class="btn ghost small" id="wash">🧼 손 위생</button>
+        <button class="btn ghost small" data-region="meas">📏 측정·전신</button>
+        <button class="btn ghost small" data-region="back">🔙 등</button>
+        <button class="btn ghost small" data-region="skin">🩹 피부</button>
+        <button class="btn ghost small" data-region="pelvic">🩺 골반·항문</button>
+        <button class="btn ghost small" id="hint">💡 힌트</button>
+      </div>
+    </div>
+    <aside class="chart">
+      <h3>진찰 기록</h3>
+      <div class="sub" id="chart-sub"></div>
+      <div id="mnemo-box"></div>
+      <div id="checklist-box"></div>
+      <ul class="log" id="log"></ul>
+    </aside>
+  </div>
+</section>
+
+<section id="s-dx" class="screen">
+  <div class="center" style="padding-top:20px">
+    <h2 style="font-size:1.7rem;margin:0" id="dx-q"></h2>
+    <p style="color:var(--muted);margin:.3rem 0 0" id="dx-sub"></p>
+  </div>
+  <div class="dx-list" id="dx-list"></div>
+</section>
+
+<section id="s-result" class="screen">
+  <div class="center" style="padding-top:14px">
+    <div class="score-big" id="r-score"></div>
+    <p id="r-msg" style="font-size:1.1rem;margin:.4rem 0 0"></p>
+  </div>
+  <div class="bars" id="r-bars"></div>
+  <div class="panel" id="r-dx"></div>
+  <div class="panel" id="r-order"></div>
+  <div class="panel" id="r-table-panel"><h3>항목별 소견과 해설</h3><div class="tbl-wrap"><table id="r-table"></table></div></div>
+  <div class="row-btns">
+    <button class="btn" id="again">같은 증례 다른 환자</button>
+    <button class="btn ghost" id="next-rand">🎲 다른 증례</button>
+    <button class="btn ghost" id="home">목록으로</button>
+  </div>
+</section>
+</div>
+
+<div class="sheet-bg" id="sheet-bg"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <h3 id="sheet-title"></h3>
+  <div id="sheet-body"></div>
+  <div class="center"><button class="btn ghost small" id="sheet-close">닫기</button></div>
+</div>
+
+<svg width="0" height="0" style="position:absolute"><symbol id="patient-sym" viewBox="0 0 320 460"></symbol></svg>
+
+<script>
+/* ================= 진찰 항목 ================= */
+const REGION_NAMES={meas:'측정·전신',head:'머리',eyes:'눈',ears:'귀',nose:'코',mouth:'입',neck:'목',chest:'가슴',back:'등',belly:'배',arms:'팔',hand:'손',legs:'다리',skin:'피부',pelvic:'골반·항문'};
+// [id, 이름, 부위, 설명 멘트, 환자 반응, 표정, 정상 소견, 해설]
+const ITEM_ROWS=[
+['vs','활력징후 확인','meas','혈압, 맥박, 호흡, 체온을 다시 확인할게요.','네~','normal','',"모든 증례의 첫 진찰. 이상 V/S는 소리 내어 언급해요."],
+['anthro','키·몸무게·허리둘레','meas','키와 몸무게, 허리둘레를 재볼게요.','두근두근…','normal','BMI 22, 허리둘레 정상','비만·대사증후군 평가에 필요해요.'],
+['general','전신상태 관찰','meas','전체적인 상태를 먼저 살펴볼게요.','네.','normal','급성 병색 없음, 의식 명료','통증 행동, 자세, 병색을 먼저 봐요.'],
+['consc','의식·지남력 (T/P/P)','meas','지금이 낮인가요, 밤인가요? 여기가 어디죠? 성함이 어떻게 되세요?','음… 병원이요!','normal','시간·장소·사람 지남력 정상','의식 수준을 평가해요.'],
+['vatga','VATGA + 혈당 확인','meas','기도, 호흡, 맥박을 보고 외상과 의식 정도를 평가할게요. 혈당도 확인할게요.','…','closed','기도 개방, 자발호흡, 외상 없음, GCS 15, 혈당 정상','의식장애는 병력청취 전에 VATGA와 혈당부터!'],
+['mmse','MMSE-K','meas','간단한 기억력 검사를 해볼게요. 최종 학력이 어떻게 되세요?','열심히 해볼게요!','normal','MMSE-K 29점','학력 보정을 위해 최종 학력을 꼭 물어요.'],
+['gait','보행 검사','meas','일어서서 편하게 걸어보세요. 넘어지지 않게 옆에서 잡아드릴게요.','뚜벅뚜벅','normal','정상 보행, 팔 흔들기 정상','파킨슨·소뇌·수두증을 걸러내요.'],
+['romberg','Romberg 검사','meas','발을 모으고 서서 눈을 감아보세요. 옆에서 잡아드릴게요.','흔들흔들…','closed','Romberg 음성','고유감각과 소뇌 기능을 봐요.'],
+['tremor','떨림 관찰','meas','손을 무릎에 편히 두고, 이번엔 팔을 앞으로 나란히 해보세요.','이렇게요?','normal','안정 시·자세 시·운동 시 떨림 없음','안정/자세/의도 떨림을 구분해요.'],
+['trauma','머리 외상 확인','head','머리에 다친 곳이 있는지 보고 만져볼게요.','다친 데는 없어요~','normal','두피·안면 외상 흔적 없음','두부 외상은 중추성 원인의 단서예요.'],
+['temporal','관자동맥 촉진','head','관자놀이 쪽 혈관을 만져볼게요.','괜찮아요.','normal','측두동맥 압통·비후 없음','고령 두통에서 측두동맥염을 걸러내요.'],
+['dix','Dix-Hallpike 검사','head','어지러움을 유발하는 검사예요. 고개를 돌린 채 빠르게 눕혀볼게요.','으앗!','surprised','Dix-Hallpike 양측 음성','BPPV 진단 검사. 어지럼을 유발하므로 맨 마지막에 해요.'],
+['conj','결막 확인','eyes','눈 아래를 살짝 당겨볼게요. 위를 봐 주세요.','위를 보면 되죠?','normal','결막 창백 없음','빈혈을 확인해요.'],
+['sclera','공막 확인','eyes','이번엔 아래를 봐 주세요. 흰자를 볼게요.','아래로~','normal','공막 황달 없음','황달을 확인해요.'],
+['eye_red','눈 충혈·눈 주변 시진','eyes','눈과 눈 주변을 자세히 볼게요.','깜빡깜빡','normal','충혈·눈물·안검하수·다크서클 없음','포도막염, 알레르기, 군발두통 등의 단서예요.'],
+['exoph','안구돌출 확인','eyes','옆과 위에서 눈을 볼게요.','네~','normal','안구돌출 없음','그레이브스병을 확인해요.'],
+['cn4','뇌신경 검사','eyes','불빛을 비춰보고, 시야를 보고, 제 손가락을 눈으로 따라와 보세요. 얼굴도 움직여볼게요.','따라가 볼게요!','normal','대광반사·시야·안구운동·안면 운동/감각 정상','동공반사 → 시야 → 안구운동 → 얼굴 순서로 봐요.'],
+['visual','시야 검사','eyes','제 손가락이 보이면 말씀해 주세요.','보여요!','normal','대면 시야 검사 정상','뇌하수체 병변, 전자간증 등을 확인해요.'],
+['pupil','동공 크기·반사·인형눈','eyes','눈을 살짝 열고 불빛을 비춰볼게요.','…','closed','동공 3mm 대칭, 대광반사 정상, 인형눈 정상','의식장애에서 뇌간 기능과 약물 중독을 평가해요.'],
+['nystag','안진·머리충동검사','eyes','제 코를 보세요. 고개를 빠르게 돌려볼게요.','어질…','normal','자발안진 없음, 머리충동검사 정상','말초성과 중추성 어지럼을 구분해요.'],
+['fundus','안저 검사','eyes','검안경으로 눈 안쪽을 볼게요.','눈부셔요~','ouch','유두부종·망막출혈 없음','고혈압·당뇨 표적장기 손상을 봐요.'],
+['hearing','청력 검사 (린네·웨버)','ears','소리굽쇠를 대볼게요. 어느 쪽이 크게 들리세요?','우웅~','surprised','린네 양측 양성, 웨버 편위 없음','메니에르병 등 청력 저하를 확인해요.'],
+['otoscope','이경 검사','ears','귀 안을 들여다볼게요.','간지러워요','happy','고막 정상','중이염 동반 여부를 봐요.'],
+['rhinoscope','비경 검사','nose','코 안을 들여다볼게요.','흥!','surprised','비점막 정상, 콧물·출혈 없음','점막 색, 콧물, 출혈 부위, 비중격을 봐요.'],
+['sinus','부비동 압통','nose','광대와 이마 쪽을 눌러볼게요.','괜찮아요.','normal','부비동 압통 없음','부비동염을 확인해요.'],
+['mouth','구강 점막 (탈수)','mouth','입을 벌리고 혀를 들어볼게요.','아~','ahh','구강 점막 촉촉함','탈수를 확인해요.'],
+['throat','인두·편도 시진','mouth','아~ 해보세요. 목 안쪽을 볼게요.','아아아~','ahh','인두 발적·편도 비대·후비루 없음','인두염, 편도, 후비루, 구강 구조를 봐요.'],
+['mouth_special','구강 내 병변 확인','mouth','입안을 구석구석 자세히 볼게요.','아~','ahh','궤양·잇몸 이상·깨문 흔적·치아 변색 없음','구강궤양, 잇몸 출혈·색소침착, 혀 깨문 흔적, 날숨 냄새 등을 봐요.'],
+['lymph','경부 림프절 촉진','neck','목의 멍울을 만져볼게요.','간지러워요','happy','촉지되는 림프절 없음','감염·악성 림프절을 확인해요.'],
+['thyroid','갑상샘 촉진','neck','뒤에서 목 앞을 만져볼게요. 침을 꿀꺽 삼켜 주세요.','꿀꺽','normal','갑상샘 비대·결절 없음','갑상샘 기능 이상의 단서예요.'],
+['carotid','경동맥 시진·청진','neck','숨을 잠깐 참아 주세요. 목 혈관 소리를 들어볼게요.','흡!','strain','경동맥 잡음 없음','경동맥 협착을 확인해요.'],
+['trachea','기관 편위 확인','neck','목 가운데 기관의 위치를 볼게요.','네.','normal','기관 정중앙','긴장성 기흉, 종괴를 확인해요.'],
+['jvp','경정맥 확인','neck','45도로 기대서 고개를 왼쪽으로 돌려 주세요.','이렇게요?','normal','경정맥 확장 없음','심부전 등 체액 과다를 봐요.'],
+['buffalo','목덜미 지방 (buffalo hump)','neck','목 뒤쪽을 볼게요.','네~','normal','buffalo hump 없음','쿠싱 증후군을 확인해요.'],
+['neck_rom','목 시진·압통·ROM','neck','목을 앞뒤, 좌우로 움직여 보세요. 아픈 곳을 눌러볼게요.','끄덕끄덕','normal','부종·압통 없음, ROM 정상','건측부터 대칭적으로 봐요.'],
+['spurling','Spurling·Lhermitte 검사','neck','고개를 옆으로 젖힌 채 살짝 눌러볼게요.','음…','normal','Spurling·Lhermitte 음성','경추 신경근병증을 확인해요.'],
+['mening','수막자극징후','neck','고개를 숙여보고, 누워서 다리도 들어볼게요.','잘 숙여져요.','normal','경부강직 없음, Kernig·Brudzinski 음성','수막염·거미막밑출혈을 걸러내요.'],
+['chest_insp','흉부 시진','chest','가슴을 볼게요. 숨 쉬는 모양도 볼게요.','후~','normal','흉곽 대칭, 부호흡근 사용 없음, 발진 없음','부호흡근 사용 여부를 꼭 말로 언급해요.'],
+['chest_palp','흉부 촉진','chest','가슴을 눌러볼게요. 아프면 말씀해 주세요.','괜찮아요.','normal','압통 없음, 촉각진탕 대칭','흉벽 압통과 촉각진탕을 봐요.'],
+['chest_perc','흉부 타진','chest','가슴을 톡톡 두드려볼게요.','통통~','normal','양측 공명음','과공명(기흉), 탁음(흉수·경화)을 봐요.'],
+['lung','호흡음 청진','chest','숨을 크게 들이쉬고 내쉬어 주세요.','후~ 하~','normal','양측 호흡음 정상, 수포음·천명음 없음','앞뒤 12곳을 좌우 비교해요.'],
+['heart','심음 청진','chest','심장 소리를 들어볼게요.','두근두근…','normal','S1·S2 규칙적, 잡음·S3 없음','5곳(에르브점 포함)을 들어요.'],
+['breast_insp','유방 시진','chest','불편하시겠지만 유방을 볼게요. 손을 머리 위, 허리에 올려 주세요.','네…','normal','피부 변화·함몰·분비물 없음','여러 자세로 비대칭과 피부 변화를 봐요.'],
+['axilla','겨드랑이·쇄골상 림프절','chest','겨드랑이와 쇄골 위를 만져볼게요.','간지러워요','happy','림프절 촉지 안 됨','유방 질환의 전이 여부를 봐요.'],
+['breast_palp','유방 촉진','chest','반대쪽은 가려드릴게요. 건강한 쪽부터 만져볼게요.','네.','normal','종괴·압통 없음','건측부터, ㄹ자로 빠짐없이 촉진해요.'],
+['nipple','유두 분비물 확인','chest','유두를 살짝 짜볼게요. 괜찮으실까요?','네.','normal','유두 분비물 없음','혈성 분비물은 관내유두종·유방암을 시사해요.'],
+['cva','늑골척추각(CVA) 압통','back','등 뒤를 주먹으로 살짝 쳐볼게요.','통!','surprised','양측 CVA 압통 없음','신우신염·요로결석을 걸러내요.'],
+['spine','척추 정렬·허리 시진/촉진','back','엎드려서 척추와 허리를 볼게요.','네~','normal','척추 정렬 정상, 압통 없음','측만과 압통점을 확인해요.'],
+['lumbar_rom','허리 ROM','back','허리를 앞뒤, 옆으로 굽혀 보세요.','으쌰!','strain','ROM 정상, 통증 없음','굴곡 시 악화(디스크) vs 신전 시 악화(협착)를 봐요.'],
+['ab_insp','복부 시진','belly','편하게 누워서 무릎을 세워 주세요. 배를 먼저 볼게요.','네, 누울게요.','normal','복부 편평, 흉터·팽만·피부 변화 없음','팽만, 흉터, 메두사머리, 자색선조를 봐요.'],
+['ab_ausc','복부 청진','belly','청진기로 배 소리를 들어볼게요. 조금 차가울 수 있어요.','앗, 차가워요!','surprised','장음 정상, 신동맥 잡음 없음','장음과 신동맥 잡음. 타진·촉진 전에 들어요!'],
+['ab_perc','복부 타진','belly','배를 톡톡 두드려볼게요.','통통통…','normal','고창음 정상, 간 크기 정상','가스, 복수, 간 크기를 봐요.'],
+['ab_palp','복부 촉진','belly','아프지 않은 곳부터 눌러볼게요. 아프면 말씀해 주세요.','괜찮아요.','normal','압통·반발압통 없음, 간·비장 비대·종괴 없음','압통 위치, 복막자극, 간비비대, 종괴를 봐요.'],
+['striae','자색선조 확인','belly,skin','배와 옆구리 피부에 튼 살이 있는지 볼게요.','네~','normal','자색선조 없음','넓은 자주색 선조는 쿠싱 증후군 소견이에요.'],
+['ascites','복수 확인','belly','옆으로 돌아누워 볼게요. 배를 두드려볼게요.','데굴~','normal','이동탁음 음성','간경변 등에서 복수를 확인해요.'],
+['murphy','Murphy sign','belly','오른쪽 갈비뼈 밑을 누른 채 숨을 크게 들이쉬어 보세요.','흐읍~','normal','Murphy sign 음성','급성 담낭염 특수검사예요.'],
+['appendix','Psoas·Obturator sign','belly','다리를 들고 돌려볼게요. 아프면 말씀해 주세요.','음…','normal','Psoas·Obturator sign 음성','급성 충수염 특수검사예요.'],
+['bladder','치골상부 촉진 (방광)','belly','방광이 팽창된 상태인지 아랫배를 눌러볼게요.','음…','normal','방광 팽창·치골상부 압통·종괴 없음','요저류, 방광염, 골반 종괴를 확인해요.'],
+['leopold','레오폴드 수기','belly','아기 위치를 확인하려고 배를 만져볼게요.','콩닥콩닥','happy','두위, 태아 등 좌측, 선진부 진입','자궁저부 → 양측 → 치골상부 → 골반 순서예요.'],
+['turgor','피부 긴장도','hand','손등 피부를 살짝 집어볼게요.','간지러워요 히히','happy','피부 긴장도 정상','탈수 소견을 봐요.'],
+['pulse','요골 맥박','hand','손목 맥박을 짚어볼게요.','콩닥콩닥','normal','맥박 규칙적','부정맥·빈맥·서맥을 봐요.'],
+['clubbing','곤봉지·청색증','hand','손톱과 손끝 색을 볼게요.','반짝반짝','happy','곤봉지·청색증 없음','만성 폐질환·저산소증을 봐요.'],
+['flap','손바닥 홍반·퍼덕떨림','hand','팔을 앞으로 뻗고 손목을 뒤로 젖혀 보세요.','이렇게요?','normal','손바닥 홍반·퍼덕떨림 없음','간질환·간성뇌증 소견이에요.'],
+['tinel','Tinel·Phalen 검사','hand','손목을 톡톡 치고, 손등을 맞대 볼게요.','찌릿?','normal','Tinel·Phalen 음성','손목터널증후군을 확인해요.'],
+['cerebellar','소뇌기능검사','arms','제 손가락과 코를 번갈아 만져보시고, 손바닥을 빠르게 뒤집어 보세요.','번갈아… 번갈아!','normal','손코·빠른교대운동 정상','소뇌 병변을 확인해요. 양쪽 다!'],
+['rigidity','강직 평가','arms','힘을 빼세요. 팔과 손목을 제가 움직여볼게요.','흐물흐물~','normal','강직 없음','파킨슨병의 톱니바퀴 강직을 봐요.'],
+['shoulder','어깨 특수검사','arms','팔을 들고 제가 누르는 힘에 버텨 보세요.','끄응!','strain','Neer·Hawkins·Empty can 음성','회전근개 증후군을 확인해요.'],
+['motor','상하지 근력','arms,legs','제가 힘을 줄 테니 버텨 보세요. 팔, 다리 차례로 할게요.','끄으응!','strain','상하지 근력 V/V, 좌우 대칭','근위/원위, 편측/양측을 비교해요.'],
+['sensory','감각 검사','arms,legs','눈을 감고 닿는 느낌이 양쪽 같은지 말씀해 주세요.','양쪽 똑같이 느껴져요.','closed','촉각·통각 좌우 대칭','피부분절과 장갑-양말형 분포를 봐요.'],
+['dtr','심부건반사 (DTR)','arms,legs','망치로 팔꿈치와 무릎을 톡 두드려볼게요. 힘 빼세요.','앗, 다리가 저절로!','surprised','양측 2+ 대칭','항진은 상위, 감소는 하위운동신경원 병변이에요.'],
+['patho','병적반사 (Babinski·Hoffman)','arms,legs','발바닥을 긁고 손가락을 튕겨볼게요.','간지러워요!','happy','Babinski·Hoffman 음성','상위운동신경원 병변을 확인해요.'],
+['joint','관절 시진·촉진·ROM','arms,legs','관절을 보고 만져보고 움직여볼게요.','살살이요~','normal','관절 부종·발적·압통·열감 없음, ROM 정상','시진 → 촉진 → ROM 순서예요.'],
+['edema','하지 오목부종','legs','정강이를 손가락으로 꾹 눌러볼게요.','꾹~','normal','함요부종 없음','심·신·간 질환과 체액 과다를 봐요.'],
+['knee','무릎 특수검사','legs','무릎을 굽히고 돌려볼게요.','끼익?','normal','McMurray·Drawer·Valgus/Varus 음성','반월상연골, 십자·측부인대를 봐요.'],
+['slr','SLR·Patrick 검사','legs','다리를 쭉 편 채 들어올려볼게요.','으음…','normal','SLR 음성, Patrick 음성','요추 디스크, 천장관절 병변을 봐요.'],
+['homan','Homan sign','legs','발목을 위로 젖히면서 종아리를 볼게요.','괜찮아요.','normal','Homan sign 음성, 종아리 압통 없음','심부정맥혈전·폐색전증의 단서예요.'],
+['leg_pulse','하지 말초맥박','legs','발등과 발목 맥박을 짚어볼게요.','콩닥','normal','족배·후경골 동맥 맥박 정상','혈관성 파행과 신경성 파행을 구분해요.'],
+['skin','피부 시진·촉진','skin','옷을 조금 걷고 피부를 전체적으로 볼게요.','네~','normal','발진·멍·출혈반점·색 변화·상처 없음','발진 모양·분포, 멍, 황색종, 자해 흔적 등을 봐요.'],
+['andro','여드름·체모 확인','skin','얼굴과 등의 여드름, 턱과 배 쪽 털을 확인할게요. 불편하시면 말씀해 주세요.','네~','normal','여드름·다모증 없음','여드름과 여성의 턱·배 체모 증가는 고안드로겐(PCOS)·쿠싱 증후군의 단서예요.'],
+['dermo','피부묘기증 (설압자)','skin','설압자로 피부를 살짝 긁어볼게요.','간질간질','happy','피부묘기증 음성','두드러기 체질을 확인해요.'],
+['genital','외성기 시진','pelvic','불편하시겠지만 외성기를 볼게요. 가려드릴게요.','네…','normal','외성기 병변·분비물 없음','궤양, 분비물, 염증을 봐요.'],
+['pelvic','골반내진','pelvic','골반 장기를 확인하려고 내진을 할게요. 불편하시면 말씀해 주세요.','네…','normal','자궁·부속기 압통·종괴 없음','내진 전 동의! 금기사항도 확인해요.'],
+['vag_dis','질분비물 검사','pelvic','분비물을 채취해서 검사할게요.','네…','normal','분비물 정상 소견','색·냄새·KOH·Whiff 검사로 원인을 구분해요.'],
+['pap','자궁경부펴바름검사','pelvic','질경을 넣고 자궁경부 세포를 채취할게요.','네…','normal','자궁경부 육안 정상','검사 전 성경험, 월경, 24시간 내 질세척 등을 확인해요.'],
+['dre','직장수지검사 (DRE)','pelvic','항문으로 손가락을 넣어 검사할게요. 불편하시면 말씀해 주세요.','으…','ouch','종괴·압통·출혈 없음','직장 종괴, 혈변, 전립샘을 확인해요.'],
+];
+const ITEMS={};
+ITEM_ROWS.forEach(r=>{ITEMS[r[0]]={id:r[0],name:r[1],regions:r[2].split(','),say:r[3],react:r[4],expr:r[5],normal:r[6],note:r[7]}});
+
+/* ================= 증례 (CPX 필살 암기법 기반) ================= */
+const VOMIT_OPTS=['급성 위장관염 (탈수 동반)','세균성 수막염','소장 폐색','급성 췌장염','편두통'];
+const CASES=[
+{id:'abd',sys:'소화기',t:'급성 복통',mn:'앉아서 V/S–눈–구강–목–손–하지 + CVAT → 누워서 시–청–타–촉 → 특수검사(Psoas·Obturator, Murphy)',sex:'남',age:22,story:'어제 저녁엔 명치가 아팠는데 지금은 오른쪽 아랫배가 아파요. 입맛이 없고 한 번 토했어요.',vit:'128/78,98,18,37.9',req:'vs conj mouth lymph turgor edema cva ab_insp ab_ausc ab_perc ab_palp appendix murphy',
+ ab:{ab_ausc:['장음 감소','국소 복막염에서 장운동이 줄어요.'],ab_palp:['우하복부(McBurney점) 압통·반발압통','복막 자극 징후. 충수염을 강하게 시사해요.','으악, 오른쪽 아래가 아파요!','ouch'],appendix:['Psoas sign 양성, Obturator sign 양성','충수염 특수검사 양성이에요.','아야야…','ouch']},
+ dx:'급성 충수돌기염',opts:['소화성 궤양','급성 췌장염','급성 담낭염','요관결석'],sum:'명치에서 우하복부로 이동한 통증, 식욕부진, 미열. RLQ 압통·반발압통과 Psoas·Obturator sign 양성 → 급성 충수돌기염. 수술 필요성과 입원을 설명해요.'},
+{id:'dysp',sys:'소화기',t:'소화불량/만성 복통',mn:'앉아서 V/S–눈(결막·공막)–구강–목–손–하지 + CVAT → 누워서 시–청–타–촉(간/비장·종괴) + Murphy',sex:'남',age:48,story:'빈속일 때 명치가 쓰리고 밥을 먹으면 좀 나아요. 허리가 아파서 진통제를 자주 먹어요.',vit:'124/80,76,16,36.6',req:'vs conj sclera mouth lymph turgor edema cva ab_insp ab_ausc ab_perc ab_palp murphy',
+ ab:{ab_palp:['명치 부위 경한 압통, 반발압통 없음','소화성 궤양에서 흔한 소견이에요.','명치가 살짝 아파요.','ouch']},
+ dx:'소화성 궤양 (십이지장궤양)',opts:['기능성 소화불량','역류성 식도염','만성 담낭염','위암'],sum:'공복 시 악화·식후 완화되는 명치 통증, NSAIDs 복용력, 명치 압통 → 십이지장궤양. 위내시경으로 확인하고 공복 교육을 해요.'},
+{id:'hemat',sys:'소화기',t:'토혈',mn:'간set: V/S–눈(결막·공막)–코(비출혈)–구강–목–손(손바닥 홍반·퍼덕떨림)–하지 → 누워서 시(메두사·거미혈관종)–청–타–촉(간/비장) + 복수',sex:'남',age:58,story:'오늘 아침에 검붉은 피를 두 번 토했어요. 술은 매일 소주 두 병씩 마셔요.',vit:'96/60,112,20,36.8',req:'vs conj sclera rhinoscope mouth lymph turgor flap edema ab_insp ab_ausc ab_perc ab_palp ascites',
+ ab:{conj:['결막 창백','출혈로 인한 빈혈이에요.'],sclera:['공막 황달','간기능 저하 소견이에요.'],mouth:['구강 점막 건조','실혈로 인한 저혈량이에요.'],flap:['손바닥 홍반, 경미한 퍼덕떨림','만성 간질환·간성뇌증 소견이에요.'],ab_insp:['복벽 정맥 확장(메두사 머리), 앞가슴 거미혈관종','문맥압 항진 소견이에요.'],ab_palp:['비장 비대 촉지','문맥압 항진으로 비장이 커져요.'],ascites:['이동탁음 양성','복수가 있어요.']},
+ dx:'식도 정맥류 출혈',opts:['말로리-바이스 증후군','소화성 궤양 출혈','역류성 식도염','위암'],sum:'과음력, 황달, 손바닥 홍반·퍼덕떨림, 메두사 머리, 비장 비대, 복수 → 간경변에 동반된 식도 정맥류 출혈. 저혈압·빈맥이 있어 수액·수혈과 응급 내시경이 필요해요.'},
+{id:'hemato',sys:'소화기',t:'혈변',mn:'앉아서 V/S–눈(결막·공막)–구강–목–손–하지–피부(멍·출혈반점) → 누워서 시–청–타–촉 → DRE',sex:'남',age:64,story:'두 달 전부터 변에 피가 묻어 나오고 변이 가늘어졌어요. 살도 5kg 빠졌어요.',vit:'118/74,88,16,36.7',req:'vs conj sclera mouth lymph turgor edema skin ab_insp ab_ausc ab_perc ab_palp dre',
+ ab:{conj:['결막 창백','만성 출혈로 인한 빈혈이에요.'],dre:['직장 내 단단하고 불규칙한 종괴 촉지, 장갑에 혈액','직장암을 강하게 시사해요.']},
+ dx:'대장암/직장암',opts:['치핵','게실 출혈','염증성 장질환','허혈성 대장염'],sum:'50세 이상, 변 굵기 변화, 체중감소, 빈혈, DRE상 직장 종괴 → 직장암. 대장내시경과 조직검사가 필요해요.'},
+{id:'vomit',sys:'소화기',t:'구토',mn:'머뇌피수: 머리 외상 → 눈(결막·공막) → 뇌신경 → 구강 → 목 → 피부 긴장도 → 하지 → 누워서 시–청–타–촉 → 수막자극징후',req:'vs trauma conj sclera cn4 mouth lymph turgor edema ab_insp ab_ausc ab_perc ab_palp mening',opts:VOMIT_OPTS,
+ v:[
+ {sex:'여',age:28,story:'어제 저녁 회식에서 회를 먹고 밤새 7번 토했어요. 물설사도 5번 했고, 배가 살살 아파요.',vit:'102/64,108,18,37.8',
+  ab:{mouth:['구강 점막 건조','탈수 소견이에요.'],turgor:['피부 긴장도 저하, 집은 피부가 천천히 펴짐','탈수 소견이에요.'],ab_ausc:['장음 항진','위장관염에서 장운동이 늘어요.'],ab_palp:['배꼽 주위 경한 압통, 반발압통 없음','복막 자극이 없어 외과적 응급 가능성은 낮아요.','배꼽 주위가 살짝 아파요…','ouch']},
+  dx:VOMIT_OPTS[0],sum:'날것 섭취 후 구토·설사, 미열. 점막 건조·피부 긴장도 저하(탈수), 장음 항진, 복막 자극 없는 경한 압통 → 급성 위장관염과 탈수. 신경학적 진찰과 수막자극징후는 정상이에요.'},
+ {sex:'남',age:22,story:'어제부터 머리가 깨질 듯 아프고 4번 토했어요. 열이 나고 불빛이 너무 눈부셔요.',vit:'124/78,112,20,39.3',
+  ab:{cn4:['대광반사·안구운동 정상이나 빛에 심하게 눈부셔함(광선공포)','수막 자극 시 흔한 광선공포예요. 국소 결손은 없어요.','으, 불빛이 너무 눈부셔요…','ouch'],mening:['경부강직 있음, Kernig·Brudzinski 양성','세균성 수막염을 강하게 시사해요.','으악, 목이 안 숙여져요!','ouch']},
+  dx:VOMIT_OPTS[1],sum:'고열·심한 두통·광선공포 동반 구토, 복부 진찰 정상, 수막자극징후 양성 → 세균성 수막염. 입원, CSF 검사, 법정감염병 여부를 안내해요.'},
+ {sex:'여',age:67,story:'이틀 전부터 배가 쥐어짜듯 아팠다 말았다 하고 계속 토해요. 방귀도 안 나와요. 옛날에 맹장 수술을 했어요.',vit:'108/70,104,20,37.2',
+  ab:{mouth:['구강 점막 건조','탈수 소견이에요.'],turgor:['피부 긴장도 저하','탈수 소견이에요.'],ab_insp:['복부 팽만, 우하복부 수술 흉터','과거 수술로 인한 유착은 소장 폐색의 가장 흔한 원인이에요.','배가 빵빵해요…','sick'],ab_ausc:['고음의 금속성 장음','기계적 장폐색의 특징적 소견이에요.'],ab_perc:['전반적 고창음 증가','장 안에 가스가 차 있어요.'],ab_palp:['전반적 경한 압통, 반발압통 없음','복막 자극이 생기면 교액을 의심해요.','으윽, 배 전체가 아파요!','ouch']},
+  dx:VOMIT_OPTS[2],sum:'수술력, 간헐적 산통, 가스 배출 중단, 팽만·흉터, 금속성 장음, 고창음 증가, 탈수 → 유착성 소장 폐색. 금식, 수액, 비위관 감압을 설명해요.'}
+ ]},
+{id:'const',sys:'소화기',t:'변비',mn:'앉아서 V/S–눈–구강–목(림프절·갑상샘)–손–하지 → 누워서 시–청–타–촉 → DRE (직장류 의심 시 골반내진)',sex:'여',age:52,story:'석 달 전부터 일주일에 한 번밖에 변을 못 봐요. 추위를 많이 타고 살이 쪘어요.',vit:'128/84,56,14,36.2',req:'vs conj mouth lymph thyroid turgor edema ab_insp ab_ausc ab_perc ab_palp dre',
+ ab:{thyroid:['갑상샘 미만성 비대, 압통 없음','갑상샘 기능저하증을 시사해요.'],edema:['정강이 비함요성 부종(점액부종) 경미','갑상샘 기능저하증에서 보일 수 있어요.'],ab_ausc:['장음 감소','장운동 저하 소견이에요.']},
+ dx:'갑상샘 기능저하증',opts:['기능성 변비','과민성 대장증후군','대장암'],sum:'추위 불내성, 체중 증가, 서맥, 갑상샘 비대, 점액부종 → 갑상샘 기능저하증에 의한 변비. TFT로 확인해요.'},
+{id:'diar',sys:'소화기',t:'설사',mn:'앉아서 V/S–눈–구강–목(림프절·갑상샘)–손–하지–피부(물린 자국) → 누워서 시–청–타–촉 → DRE',sex:'여',age:72,story:'폐렴으로 2주간 항생제를 먹었는데 나흘 전부터 하루 6번씩 물설사를 해요. 열도 나요.',vit:'104/66,104,18,38.2',req:'vs conj mouth lymph thyroid turgor edema skin ab_insp ab_ausc ab_perc ab_palp dre',
+ ab:{mouth:['구강 점막 건조','탈수 소견이에요.'],turgor:['피부 긴장도 저하','탈수 소견이에요.'],ab_ausc:['장음 항진','장운동 증가예요.'],ab_palp:['하복부 전반 경한 압통, 반발압통 없음','대장염 소견이에요.','아랫배가 살살 아파요.','ouch']},
+ dx:'거짓막 대장염 (C. difficile)',opts:['급성 위장관염 (식중독)','과민 대장증후군','젖당 못견딤증','염증성 장질환'],sum:'장기 항생제 사용 후 발열 동반 물설사, 탈수, 하복부 압통 → 거짓막 대장염. 대변 독소 검사, 수액, 원인 항생제 중단, 임의 지사제 금지를 설명해요.'},
+{id:'jaund',sys:'소화기',t:'황달',mn:'간set: V/S–눈(결막·공막)–구강–목–손(손바닥 홍반·퍼덕떨림)–하지 → 누워서 시(거미혈관종·메두사)–청–타–촉(간/비장) + 복수 → Murphy·Courvoisier',sex:'남',age:24,story:'일주일 전부터 피곤하고 속이 메스꺼워요. 오늘 보니 눈이 노랗고 소변이 콜라색이에요. 3주 전 친구들과 생굴을 먹었어요.',vit:'118/72,88,16,37.6',req:'vs conj sclera mouth lymph turgor flap edema ab_insp ab_ausc ab_perc ab_palp ascites murphy',
+ ab:{sclera:['공막 황달','빌리루빈 상승 소견이에요.'],ab_perc:['간 탁음 범위 증가','간 비대 소견이에요.'],ab_palp:['우상복부 경한 압통, 간 비대(늑골하 2cm)','급성 간염 소견이에요.','오른쪽 위가 뻐근해요.','ouch']},
+ dx:'급성 바이러스 간염 (A형)',opts:['길버트 증후군','급성 담관염','담관암/췌두부암','알코올성 간염'],sum:'날것 섭취력, 전구 증상 후 황달·진한 소변, 압통성 간 비대 → 급성 A형 간염. 법정감염병 신고와 간염 예방접종을 교육해요.'},
+{id:'chest',sys:'순환기',t:'가슴 통증',mn:'앉아서 V/S–눈–구강–목(경동맥·기관 편위)–손(맥박)–하지 → 흉부 시–촉–타–청(심음·호흡음)',sex:'남',age:19,story:'앉아서 공부하다가 갑자기 오른쪽 가슴이 찌르듯 아프고 숨이 차요.',vit:'122/76,108,24,36.6',req:'vs conj mouth carotid trachea turgor pulse edema chest_insp chest_palp chest_perc heart lung',
+ ab:{chest_insp:['우측 흉곽 운동 감소','기흉 쪽 폐 팽창이 줄어요.'],chest_palp:['우측 촉각진탕 감소','공기가 진동 전달을 막아요.'],chest_perc:['우측 과공명음','흉강 내 공기 소견이에요.'],lung:['우측 호흡음 감소','기흉을 시사해요.']},
+ dx:'자연 기흉',opts:['급성 심근경색','심장막염','폐색전증','갈비연골염'],sum:'마른 젊은 남성의 갑작스런 흉통·호흡곤란, 우측 과공명·호흡음 감소 → 일차성 자연 기흉. 기관 편위가 없어 긴장성은 아니에요. 흉부 X-ray로 확인해요.'},
+{id:'syncope',sys:'순환기',t:'실신',mn:'머뇌팔: 두부 외상 → 눈 → 뇌신경 4가지 → 구강(혀 깨문 흔적) → 목(경동맥) → 손(맥박) → 하지 → 심음·호흡음 → 걸터앉아 상하지 근력·감각·DTR',sex:'여',age:21,story:'조회 시간에 오래 서 있다가 식은땀이 나고 눈앞이 캄캄해지더니 쓰러졌어요. 금방 깼어요.',vit:'108/68,72,16,36.5',req:'vs trauma conj cn4 mouth_special carotid turgor pulse edema heart lung motor sensory dtr',
+ ab:{},dx:'혈관미주신경성 실신',opts:['부정맥','기립성 저혈압','일과성 허혈발작','저혈당'],sum:'오래 서 있는 유발 상황, 식은땀·눈앞 캄캄 전구증상, 빠른 회복, 신경학적·심혈관 진찰 정상 → 혈관미주신경성 실신. 전조 시 자세 낮추기를 교육해요.'},
+{id:'palp',sys:'순환기',t:'두근거림',mn:'앉아서 V/S–눈–구강–목(경동맥 → 갑상샘)–손(맥박·손떨림)–하지 → 심음·호흡음 → 누워서 경정맥',sex:'여',age:29,story:'한 달 전부터 가슴이 자주 두근거리고 더위를 못 참겠어요. 많이 먹는데 살이 빠져요.',vit:'138/70,118,18,37.2',req:'vs conj mouth carotid thyroid turgor pulse tremor edema heart lung jvp',
+ ab:{thyroid:['갑상샘 미만성 비대, 잡음 청진','그레이브스병을 시사해요.'],pulse:['빈맥, 규칙적','갑상샘 호르몬 과다 소견이에요.'],tremor:['팔을 뻗을 때 미세한 손떨림','갑상샘 항진증의 떨림이에요.']},
+ dx:'갑상샘기능항진증',opts:['발작성 심실상성 빈맥','심방세동','공황장애','생리적 두근거림'],sum:'열 불내성, 체중감소, 빈맥, 손떨림, 갑상샘 비대·잡음 → 갑상샘기능항진증(그레이브스병). TFT로 확인해요.'},
+{id:'htn',sys:'순환기',t:'고혈압',mn:'키갑신복: 키/몸무게/허리둘레 → 눈(안구돌출) → 목(경동맥 → 갑상샘) → 심음 → 누워서 복부(신동맥 청진·부신 종괴) + 안저',sex:'남',age:52,story:'건강검진에서 혈압이 높다고 다시 재보라고 했어요. 가족 모두 혈압이 높아요.',vit:'152/96,78,16,36.6',req:'vs anthro conj exoph mouth carotid thyroid turgor edema heart ab_insp ab_ausc ab_perc ab_palp fundus',
+ ab:{anthro:['BMI 29.4, 허리둘레 98cm','중심 비만. 대사증후군 평가 대상이에요.'],fundus:['망막 동맥 협착, 동정맥 교차 협착','고혈압성 망막병증(표적장기 손상)이에요.']},
+ dx:'일차성 (본태) 고혈압',opts:['일차성 알도스테론증','갑상샘기능항진증','쿠싱 증후군','신동맥 협착증'],sum:'가족력, 비만, 반복 측정 고혈압, 이차성 원인 소견 없음 → 일차성 고혈압. 생활습관 교정과 가정혈압 측정을 교육해요.'},
+{id:'lipid',sys:'순환기',t:'이상지질혈증',mn:'키갑피간: 키/몸무게 → 눈(결막·공막) → 목(림프절·경동맥 → 갑상샘) → 피부(황색종) → 심음 → 누워서 복부(자색선조·간비대·복수)',sex:'남',age:32,story:'회사 검진에서 LDL이 230이래요. 아버지가 40대에 심근경색을 앓으셨어요.',vit:'124/78,72,16,36.5',req:'vs anthro conj sclera mouth lymph carotid thyroid turgor edema skin heart ab_insp striae ab_ausc ab_perc ab_palp ascites',
+ ab:{skin:['아킬레스건 황색종, 눈꺼풀 황색판종','가족성 고콜레스테롤혈증의 특징이에요.']},
+ dx:'가족성 고콜레스테롤혈증',opts:['일차성 고콜레스테롤혈증 (대사증후군)','갑상샘기능저하증','쿠싱 증후군','신증후군'],sum:'젊은 나이, 조기 심혈관질환 가족력, 매우 높은 LDL, 힘줄 황색종 → 가족성 고콜레스테롤혈증. LDL 190 이상은 바로 스타틴을 써요.'},
+{id:'cough',sys:'호흡기',t:'기침',mn:'앉아서 V/S–눈(결막·충혈)–코(비경)–구강(탈수·후비루)–부비동–목–손–하지–피부(곤봉지) → 흉부 시–촉–타–청 (부호흡근 언급!)',sex:'여',age:25,story:'두 달째 기침을 해요. 밤이나 찬바람을 쐬면 심해지고 숨 쉴 때 쌕쌕 소리가 나요.',vit:'118/74,84,20,36.7',req:'vs conj eye_red rhinoscope mouth throat sinus lymph turgor edema clubbing chest_insp chest_palp chest_perc lung',
+ ab:{lung:['양측 호기 시 천명음, 호기 연장','기도 폐쇄 소견이에요.']},
+ dx:'천식',opts:['후비루증후군','위식도역류질환','COPD','폐결핵'],sum:'만성 기침, 야간·찬 공기 악화, 천명음·호기 연장 → 천식. 폐기능 검사와 흡입 스테로이드 사용법을 교육해요.'},
+{id:'rhin',sys:'호흡기',t:'콧물/코막힘',mn:'앉아서 V/S–두부 외상–눈(allergic shiner)–코(nasal crease·비경)–구강(후비루)–부비동–목–손–하지–피부 → 흉부 시–촉–타–청 + 이경검사',sex:'남',age:20,story:'봄만 되면 맑은 콧물이 줄줄 나고 재채기가 멈추질 않아요. 눈도 가려워요.',vit:'120/76,72,16,36.6',req:'vs trauma conj eye_red rhinoscope throat sinus lymph turgor edema clubbing chest_insp chest_palp chest_perc lung otoscope',
+ ab:{eye_red:['눈 밑 다크서클(allergic shiner), 결막 경한 충혈','알레르기 비염 소견이에요.'],rhinoscope:['코 등의 가로 주름(nasal crease), 창백·부종성 비점막, 맑은 콧물','알레르기 비염의 전형이에요.'],throat:['후비루 관찰','콧물이 목 뒤로 넘어가요.']},
+ dx:'알레르기 비염',opts:['부비동염','상기도 감염','혈관운동성 비염'],sum:'계절성, 맑은 콧물·재채기·눈 가려움, 창백한 부종성 점막, allergic shiner·nasal crease → 알레르기 비염. 유발물질 회피와 식염수 세척을 교육해요.'},
+{id:'hemop',sys:'호흡기',t:'객혈',mn:'피피피: 눈 → 코(피) → 구강(피) → 목 → 손 → 하지 → 피부(출혈반점·멍) → 흉부 시–촉–타–청',sex:'남',age:45,story:'3주째 기침을 하는데 오늘 가래에 피가 섞여 나왔어요. 밤에 식은땀이 나고 살이 빠졌어요.',vit:'116/72,92,18,37.8',req:'vs conj rhinoscope mouth lymph turgor edema skin chest_insp chest_palp chest_perc lung',
+ ab:{lung:['우상엽 수포음','상엽 병변은 폐결핵을 시사해요.']},
+ dx:'폐결핵',opts:['기관지확장증','폐암','폐렴','만성 기관지염'],sum:'3주 이상 기침, 객혈, 미열·야간 발한·체중감소, 우상엽 수포음 → 폐결핵. 객담 검사, 2주 격리, 법정감염병 신고를 설명해요.'},
+{id:'dysp2',sys:'호흡기',t:'호흡곤란',mn:'경갑심호: 목(림프절·경동맥 → 갑상샘·기관 편위) → 손 → 하지 → 피부(곤봉지) → 흉부 시–촉–타–청 + 심음 → Homan → 누워서 경정맥',sex:'남',age:68,story:'조금만 걸어도 숨이 차고, 밤에 누우면 숨이 막혀서 베개를 두 개 베고 자요. 다리도 부었어요.',vit:'146/88,102,24,36.6',req:'vs conj mouth lymph carotid thyroid trachea turgor edema clubbing chest_insp chest_palp chest_perc lung heart homan jvp',
+ ab:{edema:['양측 발목·정강이 함요부종 2+','체액 과다 소견이에요.'],chest_perc:['양측 폐 하부 탁음','흉수를 시사해요.'],lung:['양측 폐 하부 수포음','폐울혈 소견이에요.'],heart:['S3 청진','심부전의 특징적 소견이에요.'],jvp:['경정맥 확장','우심 압력 상승 소견이에요.']},
+ dx:'심부전',opts:['천식/COPD','폐색전증','기흉','빈혈'],sum:'운동 시 호흡곤란, 기좌호흡, 하지 부종, 경정맥 확장, 수포음, S3 → 울혈성 심부전. 심초음파와 BNP로 확인해요.'},
+{id:'poly',sys:'비뇨기',t:'다뇨',mn:'앉아서 V/S–두부 외상–눈(결막·시야)–구강–손–하지–CVAT → 누워서 시–청(신동맥)–타–촉(방광)',sex:'남',age:45,story:'한 달 전부터 목이 너무 말라서 물을 많이 마시고 화장실을 하루 열 번 넘게 가요. 살도 빠졌어요.',vit:'132/82,90,16,36.6',req:'vs trauma conj visual mouth turgor edema cva ab_insp ab_ausc ab_perc bladder',
+ ab:{mouth:['구강 점막 건조','삼투성 이뇨로 인한 탈수예요.']},
+ dx:'당뇨병',opts:['원발성 다음증','중추성 요붕증','신성 요붕증'],sum:'다음·다뇨·체중감소, 탈수 소견, 두부 외상·시야 이상 없음 → 당뇨병. 혈당·HbA1c, 소변검사로 확인해요.'},
+{id:'olig',sys:'비뇨기',t:'핍뇨',mn:'앉아서 V/S–눈–구강–손–하지–CVAT + 심음·호흡음(체액량) → 누워서 시–청(신동맥)–타–촉(방광) → DRE',sex:'남',age:74,story:'며칠 전부터 소변 줄기가 가늘더니 어제부터는 거의 안 나와요. 아랫배가 빵빵해요.',vit:'148/86,88,18,36.8',req:'vs conj mouth turgor edema cva heart lung ab_insp ab_ausc ab_perc bladder dre',
+ ab:{ab_insp:['치골상부 팽창','방광 팽창 소견이에요.'],bladder:['팽창된 방광 촉지, 압통','요폐 소견이에요.','아랫배가 터질 것 같아요!','ouch'],dre:['전립샘 대칭성 비대, 고무 같은 경도, 결절 없음','양성 전립샘 비대증 소견이에요.']},
+ dx:'신후성 급성 신손상 (양성 전립샘 비대증)',opts:['신전성 급성 신손상 (탈수)','신성 급성 신손상 (신독성 약물)','급성 사구체신염'],sum:'고령 남성, 가는 소변줄기 후 무뇨, 방광 팽창, 전립샘 비대 → BPH에 의한 신후성 AKI. 도뇨로 막힌 길을 열어줘요.'},
+{id:'redu',sys:'비뇨기',t:'붉은색 소변',mn:'앉아서 V/S–눈–구강(편도)–목–손–하지–피부(멍·출혈반점)–CVAT → 누워서 시–청(신동맥)–타–촉(방광) → DRE/골반내진 + 외성기',sex:'남',age:38,story:'오늘 새벽 갑자기 왼쪽 옆구리가 끊어질 듯 아프더니 소변이 빨갛게 나왔어요.',vit:'138/84,104,20,36.8',req:'vs conj mouth throat lymph turgor edema skin cva ab_insp ab_ausc ab_perc bladder dre genital',
+ ab:{cva:['좌측 CVA 압통 양성','좌측 요로 병변을 시사해요.','으악, 왼쪽이요!','ouch']},
+ dx:'요로결석',opts:['IgA 신병증','연쇄상구균 감염 후 사구체신염','방광암','횡문근융해증'],sum:'갑작스런 편측 옆구리 산통과 육안적 혈뇨, 좌측 CVA 압통 → 요로결석. KUB·CT로 확인하고 수분 섭취를 교육해요.'},
+{id:'dysu',sys:'비뇨기',t:'배뇨이상 (배뇨통)',mn:'앉아서 V/S–눈–구강–손–하지–CVAT → 누워서 시(기침)–청–타–촉(방광) → 걸터앉아 하지 감각·운동·DTR → 골반내진/DRE + 외성기',sex:'여',age:26,story:'사흘 전부터 소변 볼 때 따갑고 자주 마려웠는데, 어제부터 오한과 고열이 나고 오른쪽 옆구리가 아파요.',vit:'112/70,108,20,39.1',req:'vs conj mouth turgor edema cva ab_insp ab_ausc ab_perc bladder sensory motor dtr pelvic genital',gentle:1,
+ ab:{cva:['우측 CVA 압통 양성','상부 요로 감염 소견이에요.','아야, 오른쪽 등이요!','ouch'],bladder:['치골상부 압통','방광염 동반 소견이에요.']},
+ dx:'급성 신우신염',opts:['방광염','요도염','골반염','요로결석'],sum:'방광염 증상 후 고열·오한·옆구리 통증, 우측 CVA 압통 → 급성 신우신염. 소변배양 후 항생제, 수분 섭취와 위생을 교육해요.'},
+{id:'incont',sys:'비뇨기',t:'배뇨이상 (빈뇨·요실금)',mn:'원문의 신체진찰 칸이 비어 있어 배뇨통 진찰을 준용했어요: V/S–눈–구강–손–하지–CVAT → 복부(기침시키기)·방광 → 하지 신경 → 골반내진',sex:'여',age:55,story:'기침하거나 줄넘기할 때 소변이 새요. 아이를 셋 낳았어요.',vit:'126/80,74,16,36.5',req:'vs conj mouth turgor edema cva ab_insp ab_ausc ab_perc bladder sensory motor dtr pelvic',gentle:1,
+ ab:{ab_insp:['기침 시 요도에서 소변 누출 관찰','복압성 요실금 소견이에요.'],pelvic:['경미한 방광류, 기침 시 소변 누출','골반저 약화 소견이에요.']},
+ dx:'복압성 요실금',opts:['절박성 요실금 (과민성 방광)','범람 요실금','요로감염'],sum:'다분만 폐경 여성, 기침·운동 등 복압 상승 시 누출, 방광류 → 복압성 요실금. 케겔운동과 체중감량을 교육해요.'},
+{id:'fever',sys:'전신',t:'발열',mn:'앉아서 V/S–눈(결막·공막)–구강(인후부)–목–손–하지–탈의 후 피부(발진·물린 흔적) → 의심 계통 진찰',sex:'여',age:64,story:'닷새 전부터 열이 나고 온몸이 쑤셔요. 지난주에 밭일을 했고, 몸에 붉은 점들이 생겼어요.',vit:'124/76,100,18,39.0',req:'vs conj sclera mouth throat lymph turgor edema skin',
+ ab:{lymph:['압통성 경부 림프절 비대','국소 림프절병증이에요.'],skin:['사타구니의 검은 딱지(가피), 몸통의 반점구진 발진','쯔쯔가무시병의 특징적 가피예요.']},
+ dx:'쯔쯔가무시병',opts:['인플루엔자','급성 신우신염','뇌수막염','약물 유발 열'],sum:'가을 야외 작업력, 고열·근육통, 가피와 반점구진 발진, 림프절 비대 → 쯔쯔가무시병. 독시사이클린 치료와 법정감염병 신고를 안내해요.'},
+{id:'bruise',sys:'전신',t:'쉽게 멍이 듦',mn:'잇멍관R호간: V/S–눈–구강(잇몸)–목(림프절·buffalo hump)–손–하지–관절(시촉 ROM)–피부(멍) → 호흡음 → 누워서 복부(간/비장)',sex:'여',age:19,story:'2주 전 감기를 앓고 나서 다리에 멍과 빨간 점이 생기고 양치할 때 잇몸에서 피가 나요.',vit:'116/72,80,16,36.6',req:'vs conj sclera mouth mouth_special lymph buffalo turgor edema joint skin lung ab_insp ab_perc ab_palp',
+ ab:{mouth_special:['잇몸 출혈, 구강 점막 점상출혈','혈소판 감소 소견이에요.'],skin:['양 하지 점상출혈과 자반, 멍','일차 지혈(혈소판) 이상 소견이에요.']},
+ dx:'면역 혈소판 감소성 자반증 (ITP)',opts:['혈우병','간질환에 의한 응고장애','혈관염 (HSP)','혈전성 혈소판 감소성 자반증'],sum:'감기 후 점상출혈·자반·잇몸 출혈, 비장 비대·관절 출혈 없음 → ITP. 말초혈액도말로 확인하고 아스피린 금지와 출혈 예방을 교육해요.'},
+{id:'fatig',sys:'전신',t:'피로',mn:'잇관 호심피팔: V/S–눈–구강(잇몸 색소침착)–목(갑상샘)–손(관절)–하지–피부 → 심음·호흡음 → 걸터앉아 근력 → 누워서 복부',sex:'여',age:31,story:'석 달째 너무 피곤하고 계단을 오르면 숨이 차요. 생리 양이 많아서 대형 패드를 두 시간마다 갈아요.',vit:'112/68,98,18,36.5',req:'vs conj sclera mouth mouth_special lymph thyroid turgor joint edema skin heart lung motor ab_insp ab_perc ab_palp',
+ ab:{conj:['결막 창백','빈혈 소견이에요.'],skin:['피부 창백, 숟가락 모양 손발톱','철결핍 소견이에요.'],heart:['빈맥, 좌측 흉골연 경한 수축기 잡음','빈혈에 의한 기능성 잡음이에요.']},
+ dx:'빈혈 (철결핍성)',opts:['갑상샘 기능 저하증','만성피로증후군','애디슨병','결핵'],sum:'월경과다, 피로·운동 시 호흡곤란, 결막 창백, 숟가락 손발톱, 기능성 잡음 → 철결핍성 빈혈. CBC·철검사와 부인과 평가를 해요.'},
+{id:'wtl',sys:'전신',t:'체중감소',mn:'키심피복: V/S–키/몸무게–눈–구강(구토 흔적)–목(림프절·갑상샘)–손–하지 → 심음 → 누워서 시–청–타–촉 → DRE',sex:'남',age:67,story:'반년 사이에 살이 8kg 빠졌어요. 밥맛이 없고 조금만 먹어도 명치가 더부룩해요.',vit:'112/70,86,16,36.7',req:'vs anthro conj sclera mouth mouth_special lymph thyroid turgor edema heart ab_insp ab_ausc ab_perc ab_palp dre',
+ ab:{anthro:['BMI 18.2 (6개월간 8kg 감소)','의미 있는 체중감소예요.'],conj:['결막 창백','만성 출혈·빈혈 소견이에요.'],lymph:['좌측 쇄골상 림프절(Virchow) 촉지','복강 내 악성 종양 전이를 시사해요.'],ab_palp:['명치부 단단한 종괴, 경한 압통','위암을 시사해요.']},
+ dx:'위암',opts:['당뇨병','갑상샘기능항진증','주요우울장애','결핵'],sum:'고령, 의미 있는 체중감소, 조기 포만감, 빈혈, Virchow 림프절, 명치 종괴 → 위암. 위내시경과 조직검사가 필요해요.'},
+{id:'wtg',sys:'전신',t:'체중증가/비만',mn:'키맥호심피복: V/S–키/몸무게–눈–구강–목(림프절·갑상샘·buffalo hump)–손(맥박)–하지–여드름·체모 → 심음·호흡음 → 누워서 시–청–타–촉',sex:'여',age:38,story:'1년 사이 얼굴이 둥글어지고 배만 나왔어요. 멍이 잘 들고 혈압도 높대요.',vit:'152/96,84,16,36.6',req:'vs anthro conj sclera mouth lymph thyroid buffalo turgor pulse edema andro heart lung ab_insp striae ab_ausc ab_perc ab_palp',
+ ab:{anthro:['BMI 30, 허리둘레 96cm (팔다리는 가늘고 몸통 비만)','중심성 비만이에요.'],buffalo:['목덜미 지방 축적(buffalo hump)','쿠싱 증후군 소견이에요.'],andro:['얼굴·등의 여드름, 턱 주변 체모 경미한 증가','과다 코르티솔·안드로겐 소견이에요.'],ab_insp:['복부 중심성 비만, 얇은 피부와 멍','과다 코르티솔 소견이에요.'],striae:['복부·옆구리의 폭 1cm 이상 넓은 자주색 선조','쿠싱 증후군의 특징적 소견이에요.']},
+ dx:'쿠싱 증후군',opts:['일차성 체중 증가','갑상샘 기능 저하증','다낭성 난소 증후군','체액 저류 (심부전)'],sum:'중심성 비만, 달덩이 얼굴, buffalo hump, 자색선조, 멍, 고혈압 → 쿠싱 증후군. 덱사메타손 억제검사로 확인해요.'},
+{id:'joint',sys:'근골격·피부',t:'관절 통증/부기',mn:'V/S–전신상태–눈(포도막염)–구강(궤양)–피부발진–관절(시진 → 촉진 → ROM) + 특수검사 → 호흡음',sex:'여',age:45,story:'석 달 전부터 양쪽 손가락 마디가 붓고 아파요. 아침에 한 시간 넘게 뻣뻣해요.',vit:'122/78,78,16,36.9',req:'vs general eye_red mouth_special skin joint lung',
+ ab:{joint:['양측 MCP·PIP 관절 대칭적 부종·압통·열감, 주먹 쥐기 제한','염증성 다발관절염 소견이에요.','손가락이 욱신거려요…','ouch']},
+ dx:'류마티스 관절염',opts:['골관절염','통풍','루푸스 관절염','감염 관절염'],sum:'6주 이상, 손의 작은 관절 대칭성 다발관절염, 1시간 이상 조조강직 → 류마티스 관절염. RF·anti-CCP와 조기 치료를 안내해요.'},
+{id:'neck',sys:'근골격·피부',t:'목 통증',mn:'대칭 확인(건측 → 환측): V/S–전신상태–목(시진·압통점 촉진·ROM)–Spurling·Lhermitte → 걸터앉아 상지 감각·근력·DTR + Hoffman → 누워서 수막자극징후',sex:'남',age:42,story:'2주 전부터 목이 아프고 오른팔 바깥쪽에서 엄지까지 저려요. 고개를 젖히면 더 심해요.',vit:'128/80,74,16,36.6',req:'vs general neck_rom spurling sensory motor dtr patho mening',
+ ab:{neck_rom:['경추 우측 근육 압통, 신전·우측 회전 시 통증','경추 병변 소견이에요.'],spurling:['우측 Spurling 양성 (팔로 방사통)','경추 신경근병증을 시사해요.','으, 팔까지 찌릿해요!','ouch'],sensory:['우측 엄지·전완 외측(C6) 감각 저하','C6 신경근 침범이에요.'],motor:['우측 주관절 굴곡·손목 신전 IV/V','C6 근력 약화예요.'],dtr:['우측 이두근·상완요골근 반사 감소','신경근(하위운동신경원) 병변이에요.']},
+ dx:'경추 추간판 탈출증',opts:['경추 염좌','척추관 협착증','근막통증 증후군'],sum:'목 통증과 C6 분포 방사통, Spurling 양성, 감각·근력·반사 저하 → 경추 추간판 탈출증. MRI로 확인하고 보존적 치료를 설명해요.'},
+{id:'lbp',sys:'근골격·피부',t:'허리 통증',mn:'V/S–전신상태–눈(포도막염) → 서서 자세·걸음걸이·ROM → 엎드려 척추 정렬·허리 시촉 → 누워서 SLR·Patrick·말초맥박 → 걸터앉아 하지 감각·근력·DTR',sex:'남',age:35,story:'어제 이삿짐을 들다가 허리를 삐끗했는데 왼쪽 엉덩이에서 발등까지 저려요. 허리를 숙이면 더 아파요.',vit:'130/80,80,16,36.6',req:'vs general eye_red gait lumbar_rom spine slr leg_pulse sensory motor dtr',
+ ab:{lumbar_rom:['굴곡 시 통증으로 제한','디스크 병변은 굴곡 시 악화돼요.'],spine:['좌측 요추 주위근 압통, 경직','근육 경직 소견이에요.'],slr:['좌측 SLR 40도에서 양성, Patrick 음성','요추 신경근 자극 소견이에요.','아야, 다리로 찌릿해요!','ouch'],sensory:['좌측 발등(L5) 감각 저하','L5 신경근 침범이에요.'],motor:['좌측 엄지발가락 신전 IV/V','L5 근력 약화예요.']},
+ dx:'요추 추간판 탈출증',opts:['요추 염좌','요추 협착증','강직성 척추염','요추 압박골절'],sum:'물건을 들다 발생, 굴곡 시 악화, L5 방사통, SLR 양성, 감각·근력 저하 → 요추 추간판 탈출증. 마미증후군 경고 증상을 교육해요.'},
+{id:'rash',sys:'근골격·피부',t:'피부발진',mn:'궤림묘호: 커튼 치고 피부 충분히 노출 → V/S–피부(시진·촉진)–눈–입(궤양)–목(림프절)–설압자(피부묘기증)–호흡음',sex:'여',age:27,story:'감기 때문에 사흘 전부터 항생제를 먹었는데 어제부터 몸통에 붉은 발진이 번지고 가려워요.',vit:'118/76,82,16,37.3',req:'vs skin conj mouth_special lymph dermo lung',
+ ab:{skin:['몸통·사지 근위부의 대칭적 홍반성 반점구진, 누르면 하얘짐, 수포·점막 침범 없음','약물 발진의 전형적인 모양이에요.']},
+ dx:'약물 발진',opts:['결절성 홍반','아토피 피부염','옴','수두'],sum:'새 약물 복용 수일 후 대칭성 홍반성 반점구진, 점막 침범 없음 → 약물 발진. 원인 약물 중단, 항히스타민, 호흡곤란 시 응급 내원을 교육해요.'},
+{id:'mood',sys:'정신',t:'기분변화',mn:'V/S–눈–입–목(갑상샘)–손–하지 → 심음·호흡음 → 걸터앉아 상하지 감각·근력·DTR',sex:'여',age:34,story:'두 달째 기분이 가라앉고 좋아하던 일도 재미가 없어요. 잠을 설치고 입맛도 없어요.',vit:'114/72,72,16,36.5',req:'vs conj mouth thyroid turgor edema heart lung sensory motor dtr',gentle:1,
+ ab:{},dx:'주요우울장애',opts:['적응장애','양극성 장애','갑상샘 기능 저하증','뇌졸중'],sum:'2주 이상 우울감·흥미 상실·수면·식욕 변화, 갑상샘·신경학적 진찰 정상 → 주요우울장애. 약은 2~3주 뒤 효과가 나고 임의로 끊지 않도록 교육해요.'},
+{id:'anx',sys:'정신',t:'불안',mn:'V/S–눈–입–목(갑상샘)–손(맥박·떨림)–하지 → 심음·호흡음 (갈색세포종 의심 시 복부 촉진)',sex:'남',age:27,story:'지하철에서 갑자기 심장이 터질 듯 뛰고 숨이 막혀 죽을 것 같았어요. 10분쯤 지나니 괜찮아졌어요. 또 그럴까 봐 무서워요.',vit:'126/78,88,16,36.6',req:'vs conj mouth thyroid pulse tremor turgor edema heart lung',gentle:1,
+ ab:{},dx:'공황장애',opts:['범불안장애','갑상샘기능항진증','부정맥'],sum:'갑작스런 극심한 공포와 자율신경 증상, 10분 내 호전, 예기불안, 갑상샘·심장 진찰 정상 → 공황장애. 생명에 위협이 없음을 안심시키고 카페인을 줄이도록 교육해요.'},
+{id:'sleep',sys:'정신',t:'수면장애',mn:'V/S–키/몸무게–눈–입(구강 구조: 혀·목젖·편도)–목(갑상샘)–손–하지 → 심음·호흡음',sex:'남',age:48,story:'밤에 코를 심하게 골고 숨을 멈춘대요. 자도 자도 피곤하고 낮에 회의 중에 졸아요.',vit:'142/90,80,16,36.6',req:'vs anthro conj mouth throat thyroid turgor edema heart lung',
+ ab:{anthro:['BMI 31, 목둘레 44cm','비만과 굵은 목은 수면무호흡 위험인자예요.'],throat:['큰 혀, 길고 두꺼운 목젖, 편도 비대 (Mallampati IV)','상기도가 좁아요.']},
+ dx:'폐쇄성 수면 무호흡증',opts:['불면장애','하지불안 증후군','우울장애','일주기리듬 수면장애'],sum:'코골이·무호흡 목격, 주간 졸림, 비만·굵은 목, 좁은 상기도 → 폐쇄성 수면무호흡증. 수면다원검사와 체중감량을 안내해요.'},
+{id:'memory',sys:'정신',t:'기억력 저하',mn:'M경갑뇌보팔: MMSE-K → 경동맥 → 갑상샘 → 뇌신경 (+LBD 의심 시 손떨림·강직) → 서서 보행 → 걸터앉아 상하지 감각·근력·DTR',sex:'남',age:76,story:'(보호자) 작년부터 깜빡하는 게 계단식으로 확 나빠졌어요. 고혈압, 당뇨가 있고 요즘 왼팔을 좀 못 써요.',vit:'162/92,76,16,36.5',req:'vs mmse carotid thyroid cn4 tremor rigidity gait sensory motor dtr',
+ ab:{mmse:['MMSE-K 20점 (지남력·회상 저하)','인지기능 저하예요.'],carotid:['우측 경동맥 잡음','경동맥 협착 소견이에요.'],gait:['보폭이 짧고 느린 보행','혈관성 변화 소견이에요.'],motor:['좌측 상지 IV/V','국소 신경학적 결손이에요.'],dtr:['좌측 반사 항진','상위운동신경원 병변이에요.']},
+ dx:'혈관성 치매',opts:['경도인지장애','전두측두엽 치매','갑상샘기능저하증','우울증 (가성치매)'],sum:'혈관 위험인자, 계단식 악화, 국소 신경학적 결손, 경동맥 잡음 → 혈관성 치매. 뇌 MRI, 혈관 위험인자 관리, 치매안심센터를 안내해요.'},
+{id:'dizzy',sys:'신경',t:'어지럼',mn:'충청뇌소보RD: 두부 외상 → 눈(결막·안진)·머리충동검사 → 청력(린네·웨버) → 뇌신경 4가지 → 소뇌 → 서서 보행·Romberg → 누워서 Dix-Hallpike (맨 마지막!)',sex:'여',age:55,story:'아침에 일어나거나 누울 때, 고개를 돌리면 세상이 빙빙 돌아요. 30초쯤 지나면 멎어요.',vit:'128/80,76,16,36.5',req:'vs trauma conj nystag hearing cn4 cerebellar gait romberg dix',
+ ab:{dix:['우측 Dix-Hallpike 양성: 수 초 잠복기 후 회선성 안진, 30초 내 소실','우측 후반고리관 BPPV 소견이에요.','으아, 빙글빙글 돌아요!','surprised']},
+ dx:'양성 돌발 체위성 현훈 (BPPV)',opts:['메니에르병','전정신경염','소뇌경색'],sum:'체위 변화 시 30초 이내의 회전성 어지럼, 청력·신경학적 진찰 정상, 우측 Dix-Hallpike 양성 → BPPV. 이석정복술 후 상체를 45도 높이도록 교육해요.'},
+{id:'head',sys:'신경',t:'두통',mn:'관뇌팔수: 머리 시진·촉진·관자동맥 촉진 → 눈(충혈·눈물·안검하수) → 뇌신경 → 걸터앉아 상하지 감각·근력·DTR → 누워서 수막자극징후',sex:'여',age:52,story:'화장실에서 힘주다가 갑자기 머리를 망치로 맞은 것처럼 아팠어요. 태어나서 이렇게 아픈 건 처음이에요. 두 번 토했어요.',vit:'178/100,96,18,36.9',req:'vs trauma temporal eye_red cn4 sensory motor dtr mening',
+ ab:{mening:['경부강직 양성, Kernig 양성','지주막하 혈액이 수막을 자극해요.','목이… 안 숙여져요.','ouch']},
+ dx:'거미막밑출혈 (뇌출혈)',opts:['편두통','긴장성 두통','군발 두통','뇌수막염'],sum:'힘주는 중 발생한 벼락두통, 구토, 고혈압, 발열 없는 수막자극징후 → 거미막밑출혈. 즉시 뇌 CT가 필요한 응급이에요.'},
+{id:'seiz',sys:'신경',t:'경련',mn:'뇌뇌피팔수: 머리 외상 → 뇌신경 4가지·소뇌 → 입(설압자로 깨문 흔적) → 피부 → 걸터앉아 감각·근력·DTR → 누워서 수막자극징후',sex:'남',age:17,story:'밤새 게임을 하고 아침에 쓰러져서 온몸을 떨었대요. 원래 아침에 팔이 움찔해서 컵을 자주 떨어뜨려요.',vit:'124/76,84,16,36.7',req:'vs trauma cn4 cerebellar mouth_special skin sensory motor dtr mening',
+ ab:{mouth_special:['혀 가장자리 깨문 흔적','전신 강직간대 발작의 흔적이에요.']},
+ dx:'청소년 근간대 뇌전증',opts:['측두엽 뇌전증','열성경련','뇌수막염','뇌졸중'],sum:'청소년, 아침 근간대 경련, 수면 박탈 후 전신발작, 혀 깨문 흔적, 신경학적 진찰 정상 → 청소년 근간대 뇌전증. 규칙적 수면, 음주 회피, 약 임의 중단 금지를 교육해요.'},
+{id:'weak',sys:'신경',t:'근력/감각이상',mn:'경갑뇌뇌심팔병: 피부(너클 발진) → 뇌신경 4가지 → 목(경동맥·갑상샘) → 소뇌 → 심음 → 걸터앉아 감각·근력·DTR → 누워서 수막자극징후 + 병적반사',sex:'남',age:32,story:'2주 전에 설사를 앓았는데 사흘 전부터 발끝이 저리고 다리에 힘이 빠지더니 이제 팔도 힘이 없어요.',vit:'128/80,92,18,36.8',req:'vs skin cn4 carotid thyroid cerebellar heart sensory motor dtr mening patho',
+ ab:{sensory:['양측 손끝·발끝 경한 감각 저하 (대칭)','말초신경 침범이에요.'],motor:['하지 III/V, 상지 IV/V, 대칭적','상행성 마비 소견이에요.','힘이 안 들어가요…','strain'],dtr:['양측 반사 소실','길랑-바레 증후군의 핵심 소견이에요.']},
+ dx:'길랑-바레 증후군',opts:['뇌졸중','저칼륨 주기마비','중증 근무력증','당뇨병성 신경병증'],sum:'감염 후 대칭성 상행성 근력저하, 반사 소실, 경미한 감각 이상 → 길랑-바레 증후군. 호흡근 마비 위험으로 입원하고 IVIG·혈장교환을 설명해요.'},
+{id:'coma',sys:'신경',t:'의식장애',mn:'VATGA식당: 병력청취 전 V/S·ABC·외상·GCS·처치 + 혈당 → 병력청취 후 지남력 → 눈(동공·안진·인형눈) → 입(혀·날숨 냄새) → 경동맥 → 흉부 청진 → 근력·감각·DTR·병적반사 → 복수 → 수막자극징후',sex:'여',age:23,story:'(보호자) 당뇨가 있는데 며칠 인슐린을 안 맞았어요. 계속 토하더니 오늘은 불러도 잘 못 일어나요.',vit:'96/58,122,30,37.0',req:'vatga vs consc pupil mouth_special carotid lung motor sensory dtr patho ascites mening',
+ ab:{vatga:['기도 개방, 깊고 빠른 호흡, 외상 없음, GCS 12 (E3V4M5), 혈당 480 mg/dL','고혈당 응급이에요. 수액을 바로 시작해요.'],consc:['장소·시간 지남력 저하','의식 저하 소견이에요.'],mouth_special:['과일향(아세톤) 날숨, 구강 점막 건조','케톤산증의 특징이에요.'],lung:['깊고 빠른 쿠스마울 호흡, 수포음 없음','대사성 산증에 대한 보상이에요.']},
+ dx:'당뇨병성 케톤산증',opts:['뇌졸중','뇌수막염','저혈당 혼수','간성 혼수'],sum:'1형 당뇨 인슐린 중단, 구토, 의식저하, 고혈당, 쿠스마울 호흡, 아세톤 냄새 → 당뇨병성 케톤산증. ABGA, 수액과 인슐린 치료를 설명해요.'},
+{id:'tremor',sys:'신경',t:'떨림/운동 이상',mn:'갑떨소강보R: V/S–목(갑상샘) → 떨림 확인 → 소뇌기능검사 → 강직 평가 → 서서 보행·Romberg',sex:'남',age:68,story:'오른손이 가만히 있을 때 떨려요. 움직임이 느려지고 걸음이 종종걸음이 됐대요.',vit:'132/80,72,16,36.5',req:'vs thyroid tremor cerebellar rigidity gait romberg',
+ ab:{tremor:['우측 안정 시 떨림(환약 말이), 움직이면 감소','파킨슨병의 안정 떨림이에요.'],rigidity:['우측 손목 톱니바퀴 강직','파킨슨병 소견이에요.'],gait:['종종걸음, 우측 팔 흔들기 감소, 돌 때 여러 걸음','파킨슨 보행이에요.']},
+ dx:'파킨슨병',opts:['본태성 떨림','생리적 떨림','소뇌 경색','갑상샘기능항진증'],sum:'편측 안정 떨림, 서동, 톱니바퀴 강직, 종종걸음 → 파킨슨병. 레보도파, 꾸준한 운동, 낙상·변비 예방을 교육해요.'},
+{id:'bpain',sys:'여성',t:'유방통',mn:'앉아서 시진(가만히·손 머리·손 허리·어깨 짚기) → 겨드랑이·쇄골상 림프절 → 누워서 외측·내측 유방 촉진(건측부터, ㄹ자) → 분비물(동의)',sex:'여',age:36,story:'생리 전만 되면 양쪽 가슴이 아프고 멍울이 잡혀요. 생리가 끝나면 좀 나아져요.',vit:'116/74,72,16,36.6',req:'breast_insp axilla breast_palp nipple',gentle:1,
+ ab:{breast_palp:['양측 상외측의 오돌토돌한 결절감, 경한 압통','월경 주기와 관련된 섬유낭성 변화 소견이에요.']},
+ dx:'섬유낭성 변화',opts:['생리적 유방통','유방염','유방 울혈'],sum:'월경 전 양측 주기적 통증과 결절감, 월경 후 완화 → 섬유낭성 변화. 카페인 줄이기와 30세 이후 자가검진을 교육해요.'},
+{id:'bmass',sys:'여성',t:'유방덩이',mn:'원문의 신체진찰 칸이 비어 있어 유방통 진찰을 준용했어요: 시진 → 겨드랑이·쇄골상 림프절 → 유방 촉진(종괴 압통·크기·위치) → 분비물',sex:'여',age:23,story:'샤워하다가 오른쪽 가슴에 동그란 멍울이 만져졌어요. 아프지는 않아요.',vit:'112/70,70,16,36.5',req:'breast_insp axilla breast_palp nipple',gentle:1,
+ ab:{breast_palp:['우측 상외측 2cm, 단단하고 경계 명확하며 잘 움직이는 무통성 종괴','섬유샘종의 전형이에요.']},
+ dx:'섬유샘종',opts:['엽상종양','관내유두종','유방낭종','유방암'],sum:'젊은 여성의 경계 명확하고 잘 움직이는 무통성 종괴, 림프절·분비물 없음 → 섬유샘종. 유방초음파로 확인하고 경과관찰해요.'},
+{id:'vdis',sys:'여성',t:'질분비물',mn:'앉아서 V/S–눈–입–목(갑상샘)–손–하지–CVAT → 누워서 시–청–타–촉(치골상부 압통) → 골반내진 + 질분비물검사',sex:'여',age:30,story:'항생제를 먹은 뒤로 외음부가 너무 가렵고 화끈거려요. 하얗고 덩어리진 분비물이 나와요.',vit:'114/72,74,16,36.6',req:'vs conj mouth thyroid turgor edema cva ab_insp ab_ausc ab_perc bladder pelvic vag_dis',gentle:1,
+ ab:{pelvic:['외음부 발적·부종, 질벽의 흰 치즈 같은 분비물','칸디다 질염 소견이에요.'],vag_dis:['KOH 검사에서 가성균사, Whiff 음성, pH 정상','칸디다 감염을 확인해요.']},
+ dx:'칸디다 질염',opts:['세균성 질증','편모충 질염','위축성 질염','골반염'],sum:'항생제 복용 후 심한 가려움, 흰 치즈 같은 분비물, KOH 가성균사 → 칸디다 질염. 항진균제와 통기성 좋은 속옷을 교육해요.'},
+{id:'vbleed',sys:'여성',t:'질출혈',mn:'앉아서 V/S–눈–입(점막 출혈)–목(갑상샘)–손–하지–여드름·체모(다모증)–CVAT → 누워서 시–청–타–촉(치골상부) → 골반내진 + 자궁경부펴바름검사',sex:'여',age:48,story:'몇 달 전부터 부부관계 후에 피가 비쳐요. 자궁경부암 검사는 5년 넘게 안 했어요.',vit:'120/78,78,16,36.6',req:'vs conj mouth thyroid turgor edema andro cva ab_insp ab_ausc ab_perc bladder pelvic pap',gentle:1,
+ ab:{pelvic:['자궁경부의 쉽게 출혈하는 불규칙한 외장성 종괴','자궁경부암을 강하게 시사해요.'],pap:['자궁경부 육안상 종괴, 접촉 출혈','세포검사와 조직검사가 필요해요.']},
+ dx:'자궁경부암',opts:['자궁근종','자궁내막증식증','자궁경부염','갑상샘 저하증'],sum:'성교 후 출혈, 검진 공백, 쉽게 출혈하는 경부 종괴 → 자궁경부암. 조직검사와 2년마다 검진의 중요성을 설명해요.'},
+{id:'menor',sys:'여성',t:'월경이상 (월경과다)',mn:'앉아서 V/S–눈–입–목(갑상샘)–손–하지–여드름·체모(다모증) → 누워서 시(자색선조)–청–타–촉(치골상부) → 골반내진',sex:'여',age:42,story:'1년 전부터 생리 양이 너무 많아져서 한 시간마다 패드를 갈아요. 요즘 어지럽고 숨이 차요.',vit:'110/68,98,18,36.5',req:'vs conj mouth thyroid turgor edema andro ab_insp striae ab_ausc ab_perc bladder pelvic',gentle:1,
+ ab:{conj:['결막 창백','만성 출혈로 인한 빈혈이에요.'],bladder:['치골상부의 단단한 종괴 촉지','커진 자궁이에요.'],pelvic:['자궁이 울퉁불퉁하게 커짐 (임신 12주 크기), 압통 없음','자궁근종 소견이에요.']},
+ dx:'자궁근종',opts:['자궁샘근증','자궁내막증식증','자궁내막 폴립','응고장애'],sum:'40대의 월경과다와 빈혈, 불규칙하게 커진 자궁 → 자궁근종. 골반 초음파로 확인하고 철분 보충을 안내해요.'},
+{id:'amen',sys:'여성',t:'월경이상 (무월경)',mn:'V/S–눈(결막·시야)–입–목(갑상샘)–손–하지–여드름·체모(다모증) → 누워서 시(자색선조)–청–타–촉(치골상부) → 골반내진',sex:'여',age:24,story:'생리가 여섯 달째 없어요. 원래도 불규칙했고 얼굴에 여드름이 많고 턱에 털이 나요. 임신 테스트는 음성이었어요.',vit:'124/80,76,16,36.6',req:'vs conj visual mouth thyroid turgor edema andro ab_insp striae ab_ausc ab_perc bladder pelvic',gentle:1,
+ ab:{andro:['얼굴·턱선의 염증성 여드름, 턱·하복부 정중선 체모 증가 (다모증)','고안드로겐 소견. PCOS를 시사해요.']},
+ dx:'다낭성 난소 증후군',opts:['임신','프로락틴종','신경성 식욕부진','갑상샘기능항진증'],sum:'불규칙 월경 후 무월경, 다모증·여드름, 인슐린 저항성 소견, 임신·시야 이상 없음 → PCOS. 골반 초음파와 체중관리를 안내해요.'},
+{id:'dysm',sys:'여성',t:'월경통',mn:'앉아서 V/S–눈–입–목(갑상샘)–손–하지 → 누워서 시–청–타–촉(치골상부) → 골반내진',sex:'여',age:31,story:'생리통이 몇 년 전부터 점점 심해져서 진통제도 안 들어요. 부부관계 때도 아프고 2년째 아기가 안 생겨요.',vit:'116/74,76,16,36.6',req:'vs conj mouth thyroid turgor edema ab_insp ab_ausc ab_perc bladder pelvic',gentle:1,
+ ab:{pelvic:['자궁 후굴·고정, 자궁천골인대 결절과 압통','자궁내막증 소견이에요.','아… 거기가 아파요.','ouch']},
+ dx:'자궁내막증',opts:['원발성 월경통','자궁근종','자궁샘근증'],sum:'점점 심해지는 속발성 월경통, 성교통, 난임, 자궁천골인대 결절 → 자궁내막증. 골반 초음파·MRI와 치료 방법을 설명해요.'},
+{id:'prenat',sys:'여성',t:'산전 진찰',mn:'앉아서 V/S–키/몸무게–눈(결막·공막·시야)–입–목(갑상샘)–손–하지 부종 → 누워서 복부 시–청–타–촉 + 레오폴드(2·3분기)',sex:'여',age:32,story:'임신 34주예요. 이틀 전부터 머리가 아프고 눈앞이 번쩍거려요. 얼굴이랑 손이 부었어요.',vit:'162/108,88,18,36.7',req:'vs anthro conj sclera visual mouth thyroid turgor edema ab_insp ab_ausc ab_perc ab_palp leopold',gentle:1,
+ ab:{anthro:['1주간 체중 2kg 증가','급격한 부종성 체중 증가예요.'],visual:['시야 흐림과 섬광 호소','중증 전자간증 증상이에요.'],edema:['양측 하지 함요부종 2+, 얼굴·손 부종','전자간증 소견이에요.'],ab_palp:['명치·우상복부 경한 압통','간 침범을 시사하는 중증 소견이에요.']},
+ dx:'전자간증',opts:['임신성 당뇨','태반조기박리','전치태반','조기 양막파수'],sum:'임신 20주 이후 고혈압(160/110 이상), 두통·시야장애, 부종, 우상복부 압통 → 중증 전자간증. 입원, 단백뇨·혈액검사, 분만 시기를 논의해요.'},
+{id:'growth',sys:'소아',t:'성장/발달 지연',mn:'신체진찰 없음! 생성발이(생년월일·성장·발달·이차성징) → 성장곡선·행동발달표 설명',noPE:1,sex:'남',age:13,story:'(엄마) 반에서 제일 작아요. 작년에 4cm밖에 안 컸어요. 아빠도 고등학교 때 확 컸고, 저는 초경이 16살이었어요.',vit:'-',req:'',ab:{},
+ dx:'체질성 성장지연',opts:['가족성 저신장','성장호르몬 결핍증','갑상샘 기능저하증'],sum:'연간 4cm 이상 성장, 부모의 늦은 사춘기 → 체질성 성장지연. 골연령 지연을 확인하고, 사춘기에 따라잡는다고 안심시켜요.'},
+{id:'vacc',sys:'소아',t:'예방접종',mn:'신체진찰 없음! 수첩 → 이상반응(창고경호) → 현과금 확인 → 교육',noPE:1,sex:'여',age:'12개월',story:'(아빠) 12개월 예방접종을 하러 왔어요. 이틀 전부터 콧물이 조금 나는데 열은 없어요. 알레르기도 없어요.',vit:'-',req:'',ab:{},q:'오늘 예방접종은 어떻게 할까요?',
+ dx:'예정대로 접종 (가벼운 감기는 금기가 아님)',opts:['열이 없어질 때까지 모두 연기','생백신만 빼고 접종','한 달 뒤 재방문'],sum:'발열 없는 가벼운 상기도 감염은 접종 금기가 아니에요. 12개월 MMR·수두·A형 간염 등을 예정대로 접종하고, 접종 후 주의사항과 아나필락시스 경고 증상을 교육해요.'},
+{id:'bad',sys:'상담',t:'나쁜 소식 전하기',mn:'신체진찰 없음! SPIKES + 추위보약',noPE:1,sex:'여',age:58,story:'지난주 위내시경 조직검사 결과를 들으러 왔어요.',vit:'-',req:'',ab:{},gentle:1,q:'SPIKES 순서로 옳은 것은?',
+ dx:'Setting → Perception → Invitation → Knowledge → Emotion → Strategy',opts:['Setting → Knowledge → Perception → Invitation → Emotion → Strategy','Perception → Setting → Invitation → Knowledge → Strategy → Emotion','Setting → Invitation → Knowledge → Perception → Emotion → Strategy'],sum:'환경 조성 → 환자 인식 확인 → 어디까지 들을지 묻기 → 진단을 명확하고 천천히 → 감정에 공감 → 치료 계획과 요약(추가검사·위로·보호자·약속).'},
+{id:'smoke',sys:'상담',t:'금연 상담',mn:'P/E: V/S → 눈(결막) → 입(구강 건조·치아 변색·구강 내 종양) → 호흡음',sex:'남',age:52,story:'담배를 30년째 하루 한 갑 피워요. 아침에 일어나자마자 한 대 피우고, 아파도 담배는 피우러 나가요.',vit:'134/84,80,18,36.6',req:'vs conj mouth_special lung',
+ ab:{mouth_special:['치아와 혀의 니코틴 착색, 구강 건조, 종괴 없음','흡연 관련 구강 소견이에요.'],lung:['양측 호기 연장, 경미한 천명음','흡연 관련 기도 질환 가능성이 있어 CXR·폐기능검사를 권해요.']},q:'니코틴 의존도와 치료 방침은?',
+ dx:'높은 의존도 (7점 이상) → 행동요법 + 약물요법',opts:['낮은 의존도 → 행동요법만','중등도 의존도 → 행동요법만','의존도와 관계없이 약물요법만'],sum:'기상 직후 흡연, 하루 한 갑, 아파도 흡연 → 높은 니코틴 의존도. 바레니클린 등 약물과 행동요법을 병행하고 시작일·전략·재방문을 정해요(상격시전금방).'},
+{id:'alco',sys:'상담',t:'음주 상담',mn:'P/E: V/S + 지남력·위생상태 → 눈(결막·황달·안진) → 손(퍼덕떨림·땀) → 복부 + 간질환 세트(거미혈관종·메두사·간비대·복수·Murphy)',sex:'남',age:49,story:'매일 소주 두 병은 마셔요. 아내가 술 좀 줄이라고 해요. 가끔 아침에 해장술을 마시고, 필름이 끊긴 적도 많아요.',vit:'144/90,92,16,36.7',req:'vs consc conj sclera nystag flap ab_insp ab_ausc ab_perc ab_palp ascites murphy',
+ ab:{sclera:['경미한 공막 황달','간기능 이상 가능성이에요.'],flap:['손바닥 홍반, 손 미세 떨림','만성 간질환·금단 소견이에요.'],ab_insp:['앞가슴 거미혈관종','만성 간질환 소견이에요.'],ab_palp:['간 비대(늑골하 3cm), 경한 압통','알코올성 간질환 소견이에요.']},q:'가장 적절한 평가는?',
+ dx:'알코올 사용장애 (CAGE 양성) + 알코올성 간질환 의심',opts:['위험 음주 수준, 간질환 소견 없음','사회적 음주, 추적 관찰','알코올 금단 섬망'],sum:'CAGE 4개 모두 해당, 블랙아웃, 황달·거미혈관종·간비대 → 알코올 사용장애와 알코올성 간질환 의심. LFT·복부초음파, 금단 약물, 자조모임을 안내해요.'},
+{id:'subs',sys:'상담',t:'물질 오남용',mn:'P/E: V/S + 의식(T/P/P) → 눈(결막·공막·동공·안진) → 코(비중격) → 입 → 사지(부종·점상출혈·자해 흔적) → 흉부 시촉타청 → 복부 시청타촉 → 앉아서 DTR·운동·감각',sex:'여',age:45,story:'수면제를 5년째 먹는데 이제 한 알로는 안 돼서 서너 알씩 먹어요. 약이 떨어지면 불안하고 손이 떨려서 잠을 못 자요.',vit:'118/76,92,16,36.6',req:'vs consc conj sclera pupil nystag rhinoscope mouth skin edema chest_insp chest_palp chest_perc lung ab_insp ab_ausc ab_perc ab_palp dtr motor sensory',serious:1,
+ ab:{nystag:['경미한 수평 안진','진정제 과량 복용 소견이에요.'],skin:['팔 안쪽의 오래된 긁힌 흔적 몇 개','자해 흔적 여부를 반드시 확인하고 물어봐요.']},q:'가장 적절한 평가는?',
+ dx:'진정제 (벤조디아제핀) 사용장애',opts:['아편제 사용장애','각성제 사용장애','단순 불면장애'],sum:'내성(용량 증가), 금단(불안·떨림·불면), 조절 실패 → 벤조디아제핀 사용장애. 처방 불가를 단호하게 설명하고 서서히 감량·대체약물·응급 상황을 교육해요(상걱검금치응방질).'},
+{id:'dv',sys:'상담',t:'가정폭력',mn:'진찰: 머리 외상 → 상처 부위(위치·시기가 제각각인 멍) 확인 → 검사와 치료 (파상풍 확인)',sex:'여',age:36,story:'계단에서 넘어졌어요… 일주일 전에도 넘어져서 팔을 다쳤고요.',vit:'124/80,90,16,36.6',req:'vs trauma skin',serious:1,
+ ab:{trauma:['좌측 광대 부위 부종과 압통','넘어져서 생기기 어려운 위치예요.'],skin:['팔 안쪽 손가락 모양 멍, 색이 서로 다른 여러 시기의 멍','반복된 폭력을 시사하는 소견이에요.']},q:'가장 적절한 대응은?',
+ dx:'가정폭력을 의심하고, 비밀보장 후 안전 확인·1366·해바라기센터 안내',opts:['단순 낙상으로 보고 진통제만 처방','배우자를 불러 함께 면담','환자 동의 없이 바로 경찰에 신고'],sum:'설명과 맞지 않는 위치, 시기가 다른 여러 멍 → 가정폭력 의심. 비밀보장을 약속하고, 폭력의 부당함, X-ray·CT, 파상풍, 1366·112·해바라기센터, 안전 계획을 안내해요. 아동·노인 학대는 의료인 신고 의무가 있어요.'},
+{id:'assault',sys:'상담',t:'성폭력',mn:'P/E (동성 의료진 동석): 구강 내 이물질·상처 → 피부 병변 → 골반내진 + 질분비물검사 → DRE',sex:'여',age:24,story:'어젯밤 힘든 일을 당했어요… 아직 씻지 않았어요.',vit:'120/78,96,16,36.6',req:'vs mouth_special skin pelvic vag_dis dre',serious:1,
+ ab:{skin:['양 손목과 허벅지 안쪽의 멍','폭행 증거예요. 동의 후 사진 촬영해요.']},q:'가장 먼저 설명하고 시행할 것은?',
+ dx:'비밀보장·동의 후 증거 채취, 응급피임약과 성병 예방 항생제 처방',opts:['샤워 후 다시 오도록 안내','증거 채취 없이 항생제만 처방','72시간이 지난 뒤 임신 검사부터'],sum:'72시간 이내 증거 채취(동의 필수), 임신·성병 검사, 응급피임약·예방 항생제·B형간염 조치, 상처·파상풍 치료, 해바라기센터와 상담 연결. 환자의 잘못이 아님을 꼭 말해요.'},
+{id:'suic',sys:'상담',t:'자살',mn:'P/E: 갑상샘(시·촉) → 상처 부위 확인',sex:'남',age:29,story:'(손목에 붕대) 요즘 다 끝내고 싶다는 생각이 자주 들어요. 어제 처음으로 시도했어요.',vit:'118/76,84,16,36.5',req:'vs thyroid skin',serious:1,
+ ab:{skin:['좌측 손목의 얕은 열상 여러 개, 봉합 불필요','자해 흔적이에요. 면담 후 상처를 치료해요.']},q:'가장 적절한 조치는?',
+ dx:'주요우울장애로 보고 입원 치료 권유 + 1393 안내',opts:['외래에서 항우울제만 처방하고 한 달 뒤 방문','상처만 치료하고 귀가','가족에게 알리지 않겠다고 약속하고 귀가'],sum:'자살 시도력, 반복되는 자살사고 → 입원 치료 권유(두 번까지, 거절 시 낮병원). 항우울제는 2~3주 후 효과, 1393·1577-0199 안내, 주변에 알리기, 자살 외 해결 방법이 있음을 이야기해요.'},
+];
+/* ================= 추가 시나리오 (감별진단) ================= */
+// [성별, 나이, 병력, 활력징후, 이상소견, 정답, 해설]
+const MORE={
+abd:[
+ ['여',45,'어제 삼겹살을 먹고 나서 오른쪽 윗배가 계속 아프고 오른쪽 어깨까지 뻗쳐요. 열도 나요.','132/80,100,18,38.3',{ab_palp:['우상복부 압통, 반발압통 없음','담낭 부위 염증 소견이에요.','오른쪽 위가 아파요!','ouch'],murphy:['Murphy sign 양성 (들숨 중 멈춤)','급성 담낭염의 특징적 소견이에요.','흡… 아파서 숨을 못 쉬겠어요!','ouch']},'급성 담낭염','기름진 식사 후 우상복부 통증과 어깨 방사통, 발열, Murphy sign 양성 → 급성 담낭염. 복부초음파로 확인해요.'],
+ ['남',50,'어젯밤 술을 많이 마셨는데 명치가 칼로 찌르듯 아프고 등까지 뻗쳐요. 앞으로 웅크리면 좀 나아요. 계속 토해요.','108/68,112,22,37.8',{ab_ausc:['장음 감소','췌장염 주변 마비성 장폐색 소견이에요.'],ab_palp:['명치 부위 심한 압통, 경한 근육 방어','췌장 염증 소견이에요.','으윽, 명치가…','ouch'],mouth:['구강 점막 건조','구토와 제3공간 체액 손실이에요.']},'급성 췌장염','과음 후 등으로 뻗치는 명치 통증, 웅크리면 호전, 구토, 명치 압통 → 급성 췌장염. 아밀레이스·리페이스, 금식과 수액을 설명해요.']
+],
+dysp:[
+ ['여',26,'시험 기간만 되면 밥을 조금만 먹어도 더부룩하고 금방 배가 불러요. 살 빠지거나 검은 변은 없어요.','112/70,72,16,36.5',{},'기능성 소화불량','경고 증상 없는 젊은 환자의 식후 불편감·조기 포만감, 진찰 정상 → 기능성 소화불량. 식습관과 스트레스 관리를 교육해요.'],
+ ['남',65,'석 달 전부터 명치가 더부룩하고 입맛이 없어서 7kg이 빠졌어요. 요즘 변이 까매요.','110/70,92,16,36.6',{conj:['결막 창백','만성 위장관 출혈로 인한 빈혈이에요.'],lymph:['좌측 쇄골상 림프절(Virchow) 촉지','복강 내 악성 종양 전이를 시사해요.'],ab_palp:['명치부 단단한 종괴','위암을 시사해요.']},'위암','고령, 체중감소, 흑색변, 빈혈, Virchow 림프절, 명치 종괴 → 위암. 경고 증상이 있어 바로 위내시경을 해요.'],
+ ['남',40,'밤에 야식 먹고 누우면 가슴이 타는 것 같고 신물이 올라와요.','132/84,76,16,36.6',{},'역류성 식도염','식후·누운 자세에서 악화되는 가슴쓰림과 신물, 진찰 정상 → 역류성 식도염. 식후 3시간 눕지 않기, 체중감량을 교육해요.']
+],
+hemat:[
+ ['남',30,'어젯밤 회식하고 여러 번 토했는데, 마지막에 선홍색 피가 섞여 나왔어요.','124/76,92,16,36.7',{mouth:['구강 점막 약간 건조','반복 구토로 인한 경미한 탈수예요.']},'말로리-바이스 증후군','과음 후 반복 구토 끝에 생긴 선홍색 토혈, 간질환 소견 없음 → 말로리-바이스 증후군. 대부분 저절로 멎지만 내시경으로 확인해요.'],
+ ['여',70,'무릎 관절염 때문에 진통제를 매일 먹어요. 오늘 커피 찌꺼기 같은 걸 토했고 변이 까매요.','100/62,108,18,36.6',{conj:['결막 창백','출혈로 인한 빈혈이에요.'],ab_palp:['명치 부위 압통, 반발압통 없음','궤양 부위 압통이에요.','명치가 쓰려요.','ouch']},'소화성 궤양 출혈','NSAIDs 복용, 커피 찌꺼기 토혈과 흑색변, 빈혈, 명치 압통 → 소화성 궤양 출혈. 수액, PPI, 응급 내시경을 설명해요.']
+],
+hemato:[
+ ['남',35,'변비가 심한데 대변을 보고 나면 선홍색 피가 휴지에 묻고 변기에 뚝뚝 떨어져요. 아프진 않아요.','122/78,74,16,36.5',{dre:['내치핵(3시·7시 방향) 촉지, 종괴 없음, 장갑에 선홍색 혈액','치핵 소견이에요.']},'치핵','변비, 배변 후 무통성 선홍색 출혈, DRE상 치핵 → 치핵. 좌욕, 섬유질·수분 섭취를 교육해요.'],
+ ['여',72,'심장이 불규칙하게 뛴다고 약을 먹어요. 오늘 갑자기 왼쪽 아랫배가 아프더니 피 섞인 설사를 했어요.','128/80,96,18,37.4',{ab_palp:['좌하복부 압통, 반발압통 없음','허혈성 대장염의 흔한 부위예요.','왼쪽 아래가 아파요.','ouch']},'허혈성 대장염','혈관 위험인자 고령 환자의 갑작스런 좌하복부 통증 후 혈변 → 허혈성 대장염. 대장내시경·CT로 확인해요.'],
+ ['남',24,'한 달째 피와 점액이 섞인 설사를 하루 여러 번 하고, 봐도 또 보고 싶어요. 살이 빠졌어요.','116/72,94,16,37.6',{conj:['결막 창백 경미','만성 출혈 소견이에요.'],ab_palp:['좌하복부 경한 압통','대장 염증 소견이에요.'],dre:['장갑에 점액 섞인 혈액, 종괴 없음','직장 염증 소견이에요.']},'염증성 장질환','젊은 나이, 점액혈변, 뒤무직, 체중감소 → 궤양성 대장염 등 염증성 장질환. 대장내시경과 조직검사가 필요해요.']
+],
+vomit:[
+ ['여',24,'오른쪽 머리가 욱신욱신 아프면서 토했어요. 빛이랑 소리가 싫어요. 생리 전에 가끔 이래요.','118/74,78,16,36.6',{},'편두통','반복성 편측 박동성 두통, 구토, 빛·소리 과민, 신경학적 진찰과 수막자극징후 정상 → 편두통. 두통 일기와 유발요인 회피를 교육해요.'],
+ ['남',45,'어제 술을 많이 마셨는데 명치가 아프고 등까지 뻗쳐요. 계속 토해요.','106/66,110,22,37.9',{mouth:['구강 점막 건조','탈수 소견이에요.'],ab_ausc:['장음 감소','마비성 장폐색 소견이에요.'],ab_palp:['명치 부위 심한 압통, 경한 근육 방어','췌장 염증 소견이에요.','명치가 너무 아파요!','ouch']},'급성 췌장염','과음 후 등으로 뻗치는 명치 통증과 구토, 명치 압통 → 급성 췌장염. 아밀레이스·리페이스, 금식과 수액을 설명해요.']
+],
+const:[
+ ['여',23,'다이어트 중이라 조금만 먹는데 변을 일주일에 두 번 봐요. 딱딱해서 힘을 많이 줘야 해요.','108/68,70,16,36.5',{ab_palp:['좌하복부에 압통 없는 변 덩어리 촉지','대변 정체 소견이에요.'],dre:['직장 내 딱딱한 변, 종괴·출혈 없음','기능성 변비 소견이에요.']},'기능성 변비','젊은 나이, 식사량·섬유질 부족, 경고 증상 없음 → 기능성 변비. 섬유질·수분·운동, 배변 습관을 교육해요.'],
+ ['남',68,'요즘 변이 가늘어지고 변비가 생겼어요. 가끔 피가 묻고 살도 빠졌어요.','116/72,86,16,36.6',{conj:['결막 창백','만성 출혈로 인한 빈혈이에요.'],ab_palp:['좌하복부 단단한 종괴','대장암을 시사해요.'],dre:['장갑에 혈액, 손끝에 종괴는 닿지 않음','상부 대장 병변 가능성이에요.']},'대장암','고령의 새로 생긴 배변습관 변화, 변 굵기 감소, 혈변, 체중감소, 빈혈, 복부 종괴 → 대장암. 대장내시경이 필요해요.'],
+ ['여',30,'스트레스를 받으면 배가 아프다가 화장실에 다녀오면 나아요. 변비랑 설사가 번갈아 와요.','114/72,74,16,36.5',{ab_palp:['좌하복부 경한 압통, 반발압통 없음','과민성 장의 흔한 소견이에요.']},'과민성 대장증후군','스트레스 연관 복통, 배변 후 호전, 변비·설사 교대, 경고 증상 없음 → 과민성 대장증후군. 식이·스트레스 관리를 교육해요.']
+],
+diar:[
+ ['남',25,'어제 점심에 편의점 김밥을 먹고 여섯 시간쯤 뒤부터 토하고 설사를 했어요.','104/66,106,18,37.6',{mouth:['구강 점막 건조','탈수 소견이에요.'],turgor:['피부 긴장도 저하','탈수 소견이에요.'],ab_ausc:['장음 항진','장운동 증가예요.']},'급성 위장관염 (식중독)','상한 음식 섭취 수 시간 뒤 구토·설사, 탈수, 장음 항진 → 식중독(급성 위장관염). 수액, 임의 지사제 금지를 교육해요.'],
+ ['여',28,'회사에서 스트레스를 받으면 배가 아프고 설사를 해요. 자다가 깨서 설사한 적은 없어요.','112/70,72,16,36.5',{},'과민 대장증후군','스트레스 연관 설사, 야간 설사·체중감소·혈변 없음, 진찰 정상 → 과민 대장증후군. 경고 증상을 설명하고 식이 조절을 교육해요.'],
+ ['남',22,'석 달째 설사를 하고 오른쪽 아랫배가 아파요. 살이 빠지고 정강이에 붉은 멍울이 생겼어요.','114/70,92,16,37.7',{skin:['양측 정강이 압통성 홍반 결절(결절성 홍반)','염증성 장질환의 장외 증상이에요.'],ab_palp:['우하복부 압통과 종괴감','말단 회장 염증을 시사해요.','오른쪽 아래가 아파요.','ouch'],dre:['항문 주위 누공','크론병을 시사해요.']},'염증성 장질환','젊은 나이, 만성 설사, 우하복부 통증·종괴, 체중감소, 결절성 홍반, 항문 누공 → 크론병. 대장내시경과 조직검사가 필요해요.']
+],
+jaund:[
+ ['남',20,'시험 기간에 밤을 새고 밥을 굶었더니 눈이 노래졌어요. 다른 증상은 없어요.','118/74,72,16,36.5',{sclera:['경미한 공막 황달','간접 빌리루빈 상승 소견이에요.']},'길버트 증후군','금식·스트레스 후 경미한 황달만 있고 다른 소견 정상 → 길버트 증후군. 양성 질환임을 안심시켜요.'],
+ ['여',70,'어제부터 오한이 들면서 열이 나고 오른쪽 윗배가 아파요. 눈이 노래졌어요.','102/64,112,20,39.2',{sclera:['공막 황달','담즙 정체 소견이에요.'],ab_palp:['우상복부 압통','담도 염증 소견이에요.','오른쪽 위가 아파요!','ouch']},'급성 담관염','발열·오한, 우상복부 통증, 황달(Charcot 3징후) → 급성 담관염. 항생제와 응급 담도 배액(ERCP)이 필요해요.'],
+ ['남',68,'아프지는 않은데 눈이 노래지고 온몸이 가려워요. 변이 회색이고 살이 빠졌어요.','120/76,80,16,36.6',{sclera:['공막 황달','폐쇄성 황달이에요.'],ab_palp:['우상복부에 압통 없는 커진 담낭 촉지','Courvoisier 징후. 담관 하부 악성 폐쇄를 시사해요.'],murphy:['Murphy sign 음성','담낭염은 아니에요.']},'담관암/췌두부암','무통성 황달, 가려움, 회색변, 체중감소, 무통성 담낭 촉지 → 췌두부암·원위부 담관암. 복부 CT가 필요해요.']
+],
+chest:[
+ ['남',62,'30분 전부터 가슴 한가운데를 쥐어짜듯 아프고 왼팔로 뻗쳐요. 식은땀이 나요. 담배를 피우고 당뇨가 있어요.','150/90,98,20,36.6',{heart:['S4 청진, 잡음 없음','허혈에 의한 심실 순응도 저하 소견이에요.']},'급성 심근경색','위험인자가 있는 환자의 30분 이상 쥐어짜는 흉통, 방사통, 식은땀 → 급성 심근경색. 즉시 심전도와 심근효소가 필요해요.'],
+ ['남',28,'감기 앓고 나서 가슴이 찌르듯 아파요. 누우면 심해지고 앞으로 숙이면 나아져요.','118/74,96,18,37.8',{heart:['심막 마찰음','심장막염의 특징적 소견이에요.']},'심장막염','바이러스 감염 후, 자세에 따라 변하는 흉통(앞으로 숙이면 호전), 심막 마찰음 → 급성 심장막염. 심전도(광범위 ST 상승)로 확인해요.'],
+ ['여',34,'이사하고 나서 왼쪽 가슴이 아파요. 누르면 더 아프고 숨을 크게 쉬면 아파요.','116/72,76,16,36.5',{chest_palp:['좌측 2~4번 늑연골 접합부 압통, 통증 재현','갈비연골염의 특징이에요.','거기요! 거기가 아파요.','ouch']},'갈비연골염','무리한 활동 후, 누르면 재현되는 국소 흉벽 통증 → 갈비연골염. 심장·폐 원인이 아님을 설명하고 소염진통제를 써요.']
+],
+syncope:[
+ ['남',72,'얼마 전부터 혈압약을 하나 더 먹는데, 아침에 벌떡 일어나다가 핑 돌면서 쓰러졌어요.','128/78,72,16,36.5',{vs:['누워서 128/78 mmHg·HR 72 → 서서 104/66 mmHg·HR 94','기립 시 수축기 20mmHg 이상 감소. 기립성 저혈압이에요.']},'기립성 저혈압','새 혈압약, 일어날 때 발생, 기립 시 혈압 20mmHg 이상 감소 → 기립성 저혈압. 천천히 일어나기, 약 조절을 설명해요.'],
+ ['남',70,'아무 느낌도 없이 갑자기 쓰러졌어요. 요즘 조금만 움직여도 숨이 차요.','132/70,42,16,36.5',{pulse:['서맥 42회/분, 규칙적','심한 서맥이에요.'],heart:['서맥, 대포 a파 의심','방실차단을 시사해요.']},'부정맥','전조 없는 갑작스런 실신과 심한 서맥 → 방실차단 등 부정맥에 의한 실신. 즉시 심전도와 심장 모니터링이 필요해요.'],
+ ['여',55,'당뇨약을 먹고 아침을 걸렀는데 식은땀이 나고 손이 떨리다가 쓰러졌어요. 사탕 먹고 괜찮아졌어요.','124/78,96,16,36.4',{},'저혈당','혈당강하제 복용 후 식사 거름, 자율신경 증상 후 의식 소실, 당 섭취로 회복 → 저혈당. 저혈당 대처법과 약 조절을 교육해요.']
+],
+palp:[
+ ['남',70,'고혈압이 있는데 요즘 가슴이 제멋대로 뛰어요. 조금 숨이 차요.','146/88,112,18,36.6',{pulse:['불규칙하게 불규칙한 맥박','심방세동을 시사해요.'],heart:['불규칙한 리듬, 심첨-요골 맥박 차이','심방세동 소견이에요.']},'심방세동','고령·고혈압, 불규칙하게 불규칙한 맥박 → 심방세동. 심전도와 뇌졸중 예방(항응고) 필요성을 설명해요.'],
+ ['여',25,'갑자기 심장이 엄청 빨리 뛰다가 갑자기 딱 멈춰요. 숨을 참고 힘주면 멈출 때도 있어요.','116/72,78,16,36.5',{},'발작성 심실상성 빈맥','갑자기 시작하고 갑자기 끝나는 빠른 규칙적 두근거림, 미주신경 수기로 종료, 현재 진찰 정상 → PSVT. 발작 시 심전도와 발살바 수기를 교육해요.']
+],
+htn:[
+ ['여',28,'젊은데 혈압이 높대요. 약을 두 가지나 먹는데도 잘 안 떨어져요.','168/104,80,16,36.5',{ab_ausc:['상복부에 수축기-확장기 혈관 잡음','신동맥 협착을 시사해요.']},'신동맥 협착증','젊은 여성의 조절 안 되는 고혈압, 복부 혈관 잡음 → 섬유근형성이상에 의한 신동맥 협착. 신장 초음파·CT 혈관조영으로 확인해요.'],
+ ['남',45,'검사에서 칼륨이 낮대요. 다리에 힘이 빠지고 소변을 자주 봐요.','158/98,72,16,36.5',{},'일차성 알도스테론증','저칼륨혈증, 근력저하, 다뇨를 동반한 고혈압 → 일차성 알도스테론증. 알도스테론/레닌 비율을 검사해요.'],
+ ['여',35,'혈압이 높대요. 요즘 가슴이 두근거리고 더위를 못 참고 살이 빠졌어요.','146/70,108,18,37.1',{exoph:['양측 안구돌출','그레이브스병 소견이에요.'],thyroid:['갑상샘 미만성 비대, 잡음','갑상샘기능항진증 소견이에요.']},'갑상샘기능항진증','수축기 고혈압과 넓은 맥압, 빈맥, 체중감소, 안구돌출, 갑상샘 비대 → 갑상샘기능항진증. TFT로 확인해요.']
+],
+lipid:[
+ ['남',50,'검진에서 중성지방이랑 콜레스테롤이 높대요. 배가 많이 나왔고 운동은 안 해요.','138/88,78,16,36.5',{anthro:['BMI 29, 허리둘레 102cm','복부 비만. 대사증후군 기준에 해당해요.']},'일차성 고콜레스테롤혈증 (대사증후군)','복부 비만, 고중성지방, 경계 혈압 → 대사증후군 동반 이상지질혈증. 생활습관 교정과 심혈관 위험도 평가를 해요.'],
+ ['여',55,'콜레스테롤이 갑자기 올랐대요. 요즘 추위를 타고 살이 찌고 기운이 없어요.','132/86,56,14,36.2',{thyroid:['갑상샘 미만성 비대','갑상샘 기능저하증을 시사해요.'],edema:['비함요성 부종(점액부종)','갑상샘 기능저하증 소견이에요.']},'갑상샘기능저하증','추위 불내성, 체중 증가, 서맥, 갑상샘 비대 → 이차성 이상지질혈증(갑상샘 기능저하증). 스타틴 전에 TFT를 확인해요.'],
+ ['남',40,'소변에 거품이 많고 다리가 부었어요. 콜레스테롤도 높대요.','132/84,76,16,36.5',{edema:['양측 하지 함요부종 3+','심한 단백 소실로 인한 부종이에요.'],ascites:['이동탁음 양성','복수가 있어요.']},'신증후군','거품뇨, 심한 부종, 복수, 고콜레스테롤 → 신증후군. 소변 단백·알부민 검사가 필요해요.'],
+ ['여',42,'콜레스테롤이 높대요. 얼굴이 둥글어지고 배만 나왔어요.','150/94,82,16,36.6',{anthro:['몸통 비만, 팔다리는 가늚','중심성 비만이에요.'],striae:['복부의 넓은 자주색 선조','쿠싱 증후군 소견이에요.']},'쿠싱 증후군','중심성 비만, 자색선조, 고혈압 → 쿠싱 증후군에 의한 이차성 이상지질혈증. 덱사메타손 억제검사를 해요.']
+],
+cough:[
+ ['남',35,'두 달째 코가 막히고 뭔가 목 뒤로 넘어가는 느낌이 들어서 계속 헛기침을 해요.','122/78,74,16,36.6',{rhinoscope:['부종성 비점막과 콧물','비염 소견이에요.'],throat:['후비루와 자갈 모양 인두 후벽','후비루증후군의 특징이에요.']},'후비루증후군','코막힘, 목 뒤로 넘어가는 느낌, 헛기침, 후비루·자갈 모양 인두 → 후비루증후군. 비강 스테로이드와 항히스타민을 써요.'],
+ ['남',45,'밤에 누우면 기침이 나고 신물이 올라와요. 야식을 자주 먹어요.','134/86,76,16,36.6',{throat:['인두 후벽 경미한 발적','산 역류로 인한 자극이에요.']},'위식도역류질환','누운 자세·야식 후 악화되는 기침과 신물, 폐 진찰 정상 → 위식도역류질환에 의한 만성 기침. 생활습관 교정과 PPI를 써요.'],
+ ['남',68,'40년 넘게 담배를 피웠어요. 매일 가래 기침이 나고 조금만 걸어도 숨이 차요.','136/82,92,22,36.6',{chest_insp:['술통 모양 흉곽, 부호흡근 사용','만성 과팽창 소견이에요.'],chest_perc:['양측 과공명음','폐 과팽창이에요.'],lung:['양측 호흡음 감소, 호기 연장','COPD 소견이에요.']},'COPD','중증 흡연력, 만성 가래 기침, 운동 시 호흡곤란, 술통 가슴·과공명·호흡음 감소 → COPD. 폐기능 검사와 금연을 권해요.']
+],
+rhin:[
+ ['여',30,'감기가 열흘째 안 낫고 누런 콧물이 나요. 고개를 숙이면 광대 쪽이 묵직하게 아파요.','118/76,84,16,37.9',{rhinoscope:['부종성 비점막, 중비도의 화농성 콧물','세균성 부비동염 소견이에요.'],sinus:['양측 상악동 압통','부비동염 소견이에요.','광대가 아파요.','ouch'],throat:['화농성 후비루','콧물이 목 뒤로 넘어가요.']},'부비동염','10일 이상 지속되는 감기, 화농성 콧물, 얼굴 통증, 상악동 압통 → 급성 세균성 부비동염. 항생제와 식염수 세척을 써요.'],
+ ['남',22,'사흘 전부터 콧물이 나고 목이 따끔하고 미열이 있어요.','120/76,86,16,37.6',{rhinoscope:['발적·부종된 비점막, 맑은 콧물','바이러스 감염 소견이에요.'],throat:['인두 경미한 발적','상기도 감염 소견이에요.'],lymph:['압통 있는 작은 경부 림프절','반응성 림프절이에요.']},'상기도 감염','3일째 콧물·인후통·미열, 발적된 점막과 인두 → 바이러스성 상기도 감염(감기). 대증치료와 경고 증상을 교육해요.'],
+ ['여',45,'찬바람을 쐬거나 매운 걸 먹으면 맑은 콧물이 줄줄 나요. 알레르기 검사는 음성이었어요.','124/78,74,16,36.5',{rhinoscope:['경미한 비점막 부종, 창백하지 않음, 맑은 콧물','혈관운동성 비염 소견이에요.']},'혈관운동성 비염','온도·자극에 유발되는 맑은 콧물, 알레르기 검사 음성, 창백하지 않은 점막 → 혈관운동성 비염. 유발요인 회피와 비강 스프레이를 써요.']
+],
+hemop:[
+ ['여',50,'어릴 때 폐렴을 크게 앓았어요. 매일 누런 가래가 한 컵씩 나오고 가끔 피가 섞여요.','118/74,84,18,36.8',{lung:['양측 하엽 거친 수포음','기관지확장증 소견이에요.']},'기관지확장증','과거 중증 폐렴, 매일 다량의 화농성 가래, 반복 객혈, 하엽 수포음 → 기관지확장증. 흉부 CT로 확인하고 객담 배출을 교육해요.'],
+ ['남',67,'담배를 50년 피웠어요. 요즘 피 섞인 가래가 나오고 목소리가 쉬고 살이 빠졌어요.','124/78,86,18,36.6',{lymph:['우측 쇄골상 림프절 촉지','폐암 전이를 시사해요.'],lung:['우측 상엽 국소 천명음, 호흡음 감소','기관지 폐쇄 소견이에요.']},'폐암','중증 흡연력, 객혈, 쉰 목소리, 체중감소, 쇄골상 림프절, 국소 천명음 → 폐암. 흉부 CT와 조직검사가 필요해요.'],
+ ['남',35,'사흘 전부터 고열에 오한이 나고, 녹슨 색 가래가 나와요. 오른쪽 가슴이 숨 쉴 때 아파요.','118/72,108,24,39.1',{chest_palp:['우하부 촉각진탕 증가','폐 경화 소견이에요.'],chest_perc:['우하부 탁음','폐 경화 소견이에요.'],lung:['우하엽 수포음과 기관지 호흡음','대엽성 폐렴 소견이에요.']},'폐렴','급성 고열·오한, 녹슨 색 가래, 흉막성 통증, 우하엽 경화 소견 → 폐렴구균 폐렴. 흉부 X-ray와 항생제를 설명해요.']
+],
+dysp2:[
+ ['여',35,'피임약을 먹는데, 어제 장거리 비행기를 타고 온 뒤 갑자기 숨이 차고 가슴이 아파요. 왼쪽 종아리가 부었어요.','112/70,118,26,37.2',{edema:['좌측 종아리만 부음 (비대칭)','심부정맥혈전 소견이에요.'],homan:['좌측 Homan sign 양성, 종아리 압통','심부정맥혈전을 시사해요.','왼쪽 종아리가 아파요!','ouch']},'폐색전증','경구피임약·장시간 비행 후 갑작스런 호흡곤란과 흉통, 빈맥, 편측 종아리 부종 → 심부정맥혈전에 의한 폐색전증. CT 폐혈관조영이 필요해요.'],
+ ['남',70,'COPD가 있는데 감기에 걸린 뒤로 숨이 너무 차고 누런 가래가 많아졌어요.','138/84,108,28,37.8',{chest_insp:['부호흡근 사용, 입술 오므리기 호흡','중증 호흡곤란 소견이에요.'],chest_perc:['양측 과공명음','폐 과팽창이에요.'],lung:['호흡음 감소, 양측 호기 천명음','기도 폐쇄 악화예요.']},'천식/COPD','COPD 환자의 감염 후 호흡곤란·가래 증가, 부호흡근 사용, 천명음 → COPD 급성 악화. 기관지확장제, 스테로이드, 항생제를 써요.'],
+ ['여',40,'몇 달 전부터 계단만 올라가도 숨이 차요. 생리 양이 많아요.','108/66,104,20,36.5',{conj:['결막 창백','빈혈 소견이에요.'],heart:['좌측 흉골연 수축기 잡음','빈혈에 의한 기능성 잡음이에요.']},'빈혈','월경과다, 서서히 진행하는 운동 시 호흡곤란, 결막 창백, 기능성 잡음, 폐 진찰 정상 → 빈혈. CBC와 철검사를 해요.']
+],
+poly:[
+ ['남',28,'교통사고로 머리를 다친 뒤로 소변을 하루에 6리터씩 봐요. 찬물이 계속 당겨요.','118/74,82,16,36.6',{trauma:['두피의 수술·외상 흉터','두부 외상 후 뇌하수체 손상 가능성이에요.']},'중추성 요붕증','두부 외상 후 다뇨·다음, 찬물 선호 → 중추성 요붕증. 수분제한검사와 데스모프레신 반응을 확인해요.'],
+ ['여',35,'정신과 약을 먹는데, 입이 말라서 물을 하루 종일 마셔요. 소변도 자주 봐요.','116/72,74,16,36.5',{},'원발성 다음증','정신과 약물 복용, 과도한 음수 후 다뇨, 탈수 소견 없음 → 원발성 다음증. 수분제한검사에서 소변이 농축돼요.'],
+ ['남',45,'양극성 장애로 리튬을 오래 먹었어요. 요즘 소변을 너무 자주 보고 목이 말라요.','122/78,78,16,36.6',{mouth:['구강 점막 약간 건조','경미한 탈수예요.']},'신성 요붕증','장기 리튬 복용 후 다뇨·다음 → 신성 요붕증. 데스모프레신에 반응하지 않아요.']
+],
+olig:[
+ ['여',80,'며칠째 입맛이 없어 거의 못 먹고 설사를 했어요. 이뇨제를 먹고 있어요. 소변이 거의 안 나와요.','90/56,110,20,36.7',{mouth:['구강 점막 건조','탈수 소견이에요.'],turgor:['피부 긴장도 저하','탈수 소견이에요.']},'신전성 급성 신손상 (탈수)','섭취 부족, 설사, 이뇨제, 저혈압·빈맥, 탈수 소견 → 신전성 AKI. 수액과 이뇨제 중단을 설명해요.'],
+ ['남',60,'일주일 전 CT 조영제 검사를 받았고 진통제를 계속 먹었어요. 소변이 줄고 몸이 부어요.','148/90,82,18,36.6',{edema:['양측 하지 함요부종 1+','체액 저류 소견이에요.'],lung:['양측 폐 하부 미세 수포음','체액 과다 소견이에요.']},'신성 급성 신손상 (신독성 약물)','조영제와 NSAIDs 노출 후 핍뇨와 체액 과다 → 신독성 급성 세뇨관 괴사(신성 AKI). 원인 약물 중단과 체액 관리가 필요해요.'],
+ ['남',12,'(엄마) 2주 전에 목감기를 앓았는데 소변이 콜라색이고 양이 줄었어요. 아침에 눈이 부었어요.','148/94,88,18,36.8',{edema:['눈꺼풀과 양측 하지 부종','사구체신염에 의한 체액 저류예요.']},'급성 사구체신염','인후염 2주 후 콜라색 소변, 핍뇨, 부종, 고혈압 → 연쇄상구균 감염 후 급성 사구체신염. ASO와 보체(C3)를 확인해요.']
+],
+redu:[
+ ['남',22,'감기에 걸리면 하루 이틀 만에 소변이 콜라색이 돼요. 벌써 세 번째예요.','126/80,80,16,37.3',{throat:['인두 발적, 편도 비대','동반된 상기도 감염이에요.']},'IgA 신병증','상기도 감염 1~2일 만에 반복되는 육안적 혈뇨 → IgA 신병증. 소변검사와 신장 기능을 추적해요.'],
+ ['남',10,'(엄마) 2주 전 목감기를 앓았는데 소변이 빨갛고 얼굴이랑 다리가 부었어요.','140/90,92,18,36.7',{edema:['눈꺼풀과 양측 하지 부종','체액 저류 소견이에요.']},'연쇄상구균 감염 후 사구체신염','인후염 2주 후 혈뇨, 부종, 고혈압 → 연쇄상구균 감염 후 사구체신염. ASO와 보체를 확인해요.'],
+ ['남',70,'담배를 오래 피웠어요. 아프지 않은데 소변이 빨갛게 나와요.','132/80,78,16,36.5',{conj:['결막 경한 창백','만성 출혈 소견이에요.']},'방광암','고령 흡연자의 무통성 육안적 혈뇨 → 방광암. 방광내시경과 요세포검사가 필요해요.'],
+ ['남',25,'어제 처음으로 크로스핏을 세게 했는데 온몸 근육이 아프고 소변이 콜라색이에요.','128/78,96,18,37.2',{},'횡문근융해증','격한 운동 후 근육통과 콜라색 소변 → 횡문근융해증. CK와 신장 기능 확인, 충분한 수액이 필요해요.']
+],
+dysu:[
+ ['여',24,'어제부터 소변 볼 때 따갑고 자꾸 마려워요. 봐도 시원하지 않아요. 열은 없어요.','116/74,78,16,36.8',{bladder:['치골상부 압통','방광 염증 소견이에요.','아랫배가 찌릿해요.','ouch']},'방광염','배뇨통, 빈뇨, 잔뇨감, 치골상부 압통, 발열·CVA 압통 없음 → 급성 방광염. 소변검사 후 항생제, 수분 섭취를 교육해요.'],
+ ['여',26,'새 남자친구가 생겼는데, 소변 볼 때 따갑고 분비물이 나와요.','118/74,76,16,36.7',{genital:['요도구 발적, 점액고름성 분비물','요도염 소견이에요.']},'요도염','새 성파트너, 배뇨통과 요도 분비물 → 클라미디아·임균 요도염. 핵산증폭검사, 파트너 동시 치료를 설명해요.'],
+ ['여',28,'며칠 전부터 아랫배 양쪽이 아프고 열이 나요. 분비물이 늘었어요.','114/70,104,18,38.4',{bladder:['양측 하복부 압통','골반 내 염증이에요.'],pelvic:['자궁경부 움직임 압통, 양측 부속기 압통, 화농성 분비물','골반염의 진단 기준이에요.','아… 아파요.','ouch']},'골반염','발열, 하복부 통증, 자궁경부 움직임 압통과 부속기 압통 → 골반염. 항생제와 파트너 치료, 난관 손상 위험을 설명해요.']
+],
+incont:[
+ ['여',68,'갑자기 소변이 너무 급해서 화장실 가기 전에 새요. 밤에도 두세 번 깨요.','132/80,74,16,36.5',{},'절박성 요실금 (과민성 방광)','갑작스런 강한 요의와 누출, 야간뇨, 진찰 정상 → 과민성 방광(절박성 요실금). 방광훈련과 항콜린제를 설명해요.'],
+ ['여',70,'당뇨가 20년 됐어요. 소변이 시원하게 안 나오고 조금씩 계속 새요.','136/82,76,16,36.5',{bladder:['팽창된 방광 촉지','요저류 소견이에요.'],sensory:['양측 발 장갑-양말형 감각 저하','당뇨병성 신경병증이에요.'],dtr:['양측 발목 반사 감소','말초신경병증 소견이에요.']},'범람 요실금','장기 당뇨, 배뇨 곤란과 지속적 소량 누출, 팽창된 방광, 말초신경병증 → 신경인성 방광에 의한 범람 요실금. 잔뇨 측정과 간헐적 도뇨를 설명해요.'],
+ ['여',30,'이틀 전부터 소변이 자주 마렵고 참기 힘들어요. 볼 때 따가워요.','116/72,78,16,36.8',{bladder:['치골상부 압통','방광 염증 소견이에요.']},'요로감염','급성 빈뇨·절박뇨·배뇨통, 치골상부 압통 → 요로감염에 의한 일시적 절박뇨. 소변검사와 항생제를 써요.']
+],
+fever:[
+ ['남',30,'어제 갑자기 열이 39도까지 오르고 온몸이 두들겨 맞은 것처럼 아파요. 기침도 나요. 회사에 독감 환자가 많아요.','122/76,104,18,39.0',{throat:['인두 발적','상기도 감염 소견이에요.']},'인플루엔자','겨울철 갑작스런 고열, 심한 근육통, 기침, 유행 노출 → 인플루엔자. 신속항원검사와 항바이러스제(48시간 이내)를 설명해요.'],
+ ['여',50,'폐렴으로 항생제를 먹은 지 일주일인데 다시 열이 나요. 몸 상태는 괜찮고 발진이 생겼어요.','120/76,88,16,38.4',{skin:['몸통의 홍반성 반점구진 발진','약물 과민반응 소견이에요.']},'약물 유발 열','약물 투여 7~10일 후 발열, 전신 상태에 비해 양호한 컨디션, 발진 → 약물 유발 열. 원인 약물 중단 후 해열을 확인해요.']
+],
+bruise:[
+ ['남',16,'어릴 때부터 조금만 부딪혀도 멍이 크게 들고 무릎이 자주 부어요. 외삼촌도 그랬대요.','118/74,78,16,36.6',{joint:['우측 무릎 부종·열감·ROM 제한 (혈관절증)','응고인자 결핍의 특징이에요.','무릎이 뻣뻣해요.','ouch'],skin:['큰 반상출혈(멍), 점상출혈 없음','이차 지혈(응고인자) 이상 소견이에요.']},'혈우병','남성, 모계 가족력, 관절 출혈과 큰 멍 → 혈우병. aPTT 연장과 응고인자 검사를 해요.'],
+ ['남',58,'간경화가 있어요. 요즘 양치하면 잇몸에서 피가 나고 멍이 잘 들어요.','112/70,90,16,36.7',{sclera:['공막 황달','간기능 저하 소견이에요.'],mouth_special:['잇몸 출혈','응고인자 결핍 소견이에요.'],skin:['앞가슴 거미혈관종, 팔다리 멍','만성 간질환 소견이에요.'],ab_palp:['비장 비대','문맥압 항진 소견이에요.']},'간질환에 의한 응고장애','간경변, 황달, 거미혈관종, 비장 비대와 출혈 경향 → 간질환에 의한 응고장애. PT/INR과 혈소판을 확인해요.'],
+ ['남',8,'(엄마) 감기 앓고 나서 다리랑 엉덩이에 빨간 점이 볼록하게 생겼어요. 배도 아프고 발목도 아프대요.','108/66,96,18,37.2',{skin:['하지·엉덩이의 촉지성 자반','혈관염 소견이에요.'],joint:['양측 발목 부종과 압통','관절 침범이에요.'],ab_palp:['배꼽 주위 압통','장 혈관염 소견이에요.','배가 아파요.','ouch']},'혈관염 (HSP)','소아, 감염 후 촉지성 자반, 관절통, 복통 → 헤노흐-쇤라인 자반증(IgA 혈관염). 신장 침범을 소변검사로 추적해요.']
+],
+fatig:[
+ ['여',50,'요즘 너무 피곤하고 추위를 타요. 살이 찌고 변비가 생겼어요.','128/84,56,14,36.1',{thyroid:['갑상샘 미만성 비대','갑상샘 기능저하증 소견이에요.'],edema:['비함요성 부종','점액부종이에요.'],skin:['건조하고 거친 피부','갑상샘 기능저하증 소견이에요.']},'갑상샘 기능 저하증','피로, 추위 불내성, 체중 증가, 변비, 서맥, 갑상샘 비대 → 갑상샘 기능저하증. TFT로 확인해요.'],
+ ['여',40,'몇 달째 피곤하고 살이 빠지고 어지러워요. 피부가 까매지고 짠 게 당겨요.','92/58,96,16,36.5',{mouth_special:['잇몸과 구강 점막 색소침착','애디슨병의 특징적 소견이에요.'],skin:['손바닥 주름과 팔꿈치 색소침착','ACTH 증가에 의한 색소침착이에요.']},'애디슨병','피로, 체중감소, 저혈압, 소금 갈망, 피부·점막 색소침착 → 애디슨병. 코르티솔과 ACTH를 확인해요.'],
+ ['남',40,'두 달째 피곤하고 미열이 있고 밤에 식은땀이 나요. 기침도 해요.','116/72,90,18,37.8',{lymph:['경부 림프절 비대','결핵성 림프절염 가능성이에요.'],lung:['우상엽 수포음','상엽 병변이에요.']},'결핵','만성 피로, 미열, 야간 발한, 기침, 상엽 수포음 → 폐결핵. 흉부 X-ray와 객담 검사를 해요.'],
+ ['여',35,'반년 넘게 피곤해요. 조금만 움직여도 며칠씩 앓고, 자고 나도 개운하지 않아요. 검사는 다 정상이었어요.','114/72,74,16,36.5',{},'만성피로증후군','6개월 이상 지속, 운동 후 악화, 비회복성 수면, 진찰·검사 정상 → 만성피로증후군. 단계적 활동과 수면 위생을 교육해요.']
+],
+wtl:[
+ ['여',30,'많이 먹는데도 살이 빠져요. 가슴이 두근거리고 더위를 못 참아요.','136/68,112,18,37.2',{thyroid:['갑상샘 미만성 비대, 잡음','갑상샘기능항진증 소견이에요.'],heart:['빈맥, 잡음 없음','갑상샘 호르몬 과다 소견이에요.']},'갑상샘기능항진증','식욕 증가에도 체중감소, 두근거림, 더위 불내성, 빈맥, 갑상샘 비대 → 갑상샘기능항진증. TFT로 확인해요.'],
+ ['남',40,'물을 엄청 마시고 소변을 자주 보는데, 두 달 사이 살이 6kg 빠졌어요.','126/80,88,16,36.6',{mouth:['구강 점막 건조','삼투성 이뇨로 인한 탈수예요.']},'당뇨병','다음·다뇨와 체중감소 → 당뇨병. 혈당과 HbA1c를 확인해요.'],
+ ['여',60,'남편이 떠난 뒤로 입맛이 없고 아무것도 하기 싫어요. 석 달에 5kg이 빠졌어요.','118/74,72,16,36.5',{anthro:['BMI 19, 3개월간 5kg 감소','의미 있는 체중감소예요.']},'주요우울장애','상실 후 흥미 상실, 식욕 저하, 체중감소, 기질적 소견 없음 → 주요우울장애. 자살 사고를 꼭 확인하고 치료를 권해요.']
+],
+wtg:[
+ ['여',48,'요즘 기운이 없고 추위를 타요. 별로 안 먹는데 살이 쪄요.','130/86,54,14,36.1',{thyroid:['갑상샘 미만성 비대','갑상샘 기능저하증 소견이에요.'],pulse:['서맥 54회/분','갑상샘 기능저하증 소견이에요.'],edema:['비함요성 부종(점액부종)','갑상샘 기능저하증 소견이에요.']},'갑상샘 기능 저하증','피로, 추위 불내성, 체중 증가, 서맥, 갑상샘 비대, 점액부종 → 갑상샘 기능저하증. TFT로 확인해요.'],
+ ['여',26,'2년 사이 살이 찌고 생리가 불규칙해졌어요. 여드름이 나고 턱에 털이 나요.','126/82,78,16,36.5',{anthro:['BMI 29, 허리둘레 90cm','복부 비만이에요.'],andro:['얼굴 여드름, 턱·하복부 다모증','고안드로겐 소견이에요.']},'다낭성 난소 증후군','체중 증가, 월경 불규칙, 여드름·다모증 → 다낭성 난소 증후군. 골반 초음파와 호르몬 검사를 해요.'],
+ ['남',70,'2주 만에 4kg이 늘었어요. 다리가 붓고 누우면 숨이 차요.','148/88,100,22,36.6',{edema:['양측 하지 함요부종 3+','체액 저류 소견이에요.'],lung:['양측 폐 하부 수포음','폐울혈 소견이에요.'],heart:['S3 청진','심부전 소견이에요.']},'체액 저류 (심부전)','단기간 체중 급증, 부종, 기좌호흡, 수포음, S3 → 심부전에 의한 체액 저류. 심초음파와 이뇨제를 설명해요.'],
+ ['남',35,'회사 다니면서 야식을 자주 먹고 운동을 안 했더니 3년간 15kg이 쪘어요.','136/86,76,16,36.5',{anthro:['BMI 30, 허리둘레 98cm','비만이에요.']},'일차성 체중 증가','생활습관에 의한 서서히 진행한 체중 증가, 이차성 원인 소견 없음 → 일차성 비만. 식이·운동·행동요법을 교육해요.']
+],
+joint:[
+ ['남',48,'어제 회식하고 자는데 엄지발가락이 갑자기 빨갛게 붓고 너무 아파서 깼어요. 이불만 닿아도 아파요.','138/86,92,16,37.6',{joint:['우측 첫째 발허리발가락관절 발적·부종·열감·극심한 압통','통풍 발작의 전형이에요.','으악, 건드리지 마세요!','ouch']},'통풍','음주 후 밤에 갑자기 생긴 엄지발가락 단관절염 → 급성 통풍. 관절액 요산 결정 확인과 소염제, 음주·퓨린 조절을 교육해요.'],
+ ['여',65,'무릎이 걸으면 아프고 쉬면 나아요. 아침에 10분 정도 뻣뻣해요.','132/82,74,16,36.5',{joint:['양측 무릎 염발음, 내측 관절선 압통, 경미한 부종, 손가락 끝마디 헤베르덴 결절','골관절염 소견이에요.']},'골관절염','고령, 체중 부하 시 악화·휴식 시 호전, 짧은 조조강직, 염발음·헤베르덴 결절 → 골관절염. 체중감량, 근력운동을 교육해요.'],
+ ['여',26,'손마디가 아프고 햇볕을 쬐면 얼굴에 빨간 발진이 생겨요. 입안이 헐어요.','118/74,84,16,37.5',{mouth_special:['입천장의 무통성 구강궤양','루푸스 소견이에요.'],skin:['콧등을 가로지르는 나비 모양 홍반','루푸스의 특징적 발진이에요.'],joint:['양손 관절 압통과 경미한 부종','비미란성 관절염이에요.']},'루푸스 관절염','젊은 여성, 다발관절통, 광과민성 나비 홍반, 무통성 구강궤양 → 전신홍반루푸스. ANA와 항-dsDNA 검사를 해요.'],
+ ['남',60,'당뇨가 있어요. 이틀 전부터 오른쪽 무릎이 붓고 뜨겁고 아파서 구부릴 수가 없어요. 열도 나요.','124/78,106,18,38.8',{joint:['우측 무릎 발적·부종·열감, 능동·수동 ROM 모두 심하게 제한','감염 관절염을 시사해요.','움직이면 너무 아파요!','ouch']},'감염 관절염','면역저하 환자의 발열과 급성 단관절염, 심한 ROM 제한 → 감염 관절염. 즉시 관절천자와 항생제가 필요한 응급이에요.']
+],
+neck:[
+ ['남',30,'어제 교통사고가 났는데 목이 뻣뻣하고 아파요. 팔이 저리지는 않아요.','128/80,82,16,36.6',{neck_rom:['경추 주위근 압통, 통증으로 ROM 제한','연부조직 손상 소견이에요.','목 돌리기가 힘들어요.','ouch']},'경추 염좌','외상 후 목 통증과 ROM 제한, 신경학적 결손 없음 → 경추 염좌. 영상검사로 골절을 배제하고 보존적 치료를 해요.'],
+ ['남',68,'목이 뻐근하고 양손이 저려요. 요즘 단추 잠그기가 어렵고 걸음이 휘청거려요.','136/82,76,16,36.5',{sensory:['양손 저림과 감각 저하','경추 척수 압박 소견이에요.'],dtr:['사지 심부건반사 항진','상위운동신경원 병변이에요.'],patho:['양측 Hoffman 양성, Babinski 양성','척수병증 소견이에요.']},'척추관 협착증','고령, 손의 섬세한 운동 장애, 보행 불안, 반사 항진, 병적반사 양성 → 경추 척추관 협착에 의한 척수병증. MRI와 수술 평가가 필요해요.'],
+ ['여',35,'하루 종일 컴퓨터를 해요. 목이랑 어깨가 뭉치고, 누르면 아픈 데서 머리 쪽으로 퍼져요.','116/72,72,16,36.5',{neck_rom:['양측 승모근의 압통점(누르면 방사통), ROM 정상','근막통증 증후군의 통증 유발점이에요.','거기요, 머리까지 울려요!','ouch']},'근막통증 증후군','장시간 자세, 통증 유발점 압통과 연관통, 신경학적 결손 없음 → 근막통증 증후군. 자세 교정과 스트레칭을 교육해요.']
+],
+lbp:[
+ ['남',30,'어제 헬스하고 나서 허리가 뻐근하고 아파요. 다리는 안 저려요.','126/78,76,16,36.5',{spine:['요추 주위근 압통과 경직','근육 손상 소견이에요.'],lumbar_rom:['통증으로 굴곡 제한','근육성 통증이에요.']},'요추 염좌','운동 후 허리 통증, 방사통·신경학적 결손 없음 → 요추 염좌. 적당한 활동 유지와 진통제를 설명해요.'],
+ ['남',70,'조금만 걸어도 양쪽 다리가 저리고 터질 것 같아서 쉬어야 해요. 허리를 숙이면 편해요.','138/84,74,16,36.5',{gait:['상체를 앞으로 숙인 자세로 보행','신경성 파행 소견이에요.'],lumbar_rom:['신전 시 다리 저림 악화, 굴곡 시 호전','요추 협착증의 특징이에요.']},'요추 협착증','고령, 보행 시 다리 저림(신경성 파행), 허리 굽히면 호전, 말초맥박 정상 → 요추 척추관 협착증. MRI와 보존적·수술적 치료를 설명해요.'],
+ ['남',24,'석 달째 아침에 허리가 한 시간 넘게 뻣뻣하고, 움직이면 나아져요. 작년에 눈이 빨갛게 아팠어요.','122/76,76,16,36.8',{eye_red:['포도막염 흔적 (경한 섬모체 충혈)','강직성 척추염의 장외 증상이에요.'],spine:['양측 천장관절 압통','천장관절염 소견이에요.'],lumbar_rom:['전방 굴곡 제한 (Schober 검사 감소)','척추 운동 제한이에요.']},'강직성 척추염','젊은 남성, 염증성 요통(조조강직, 운동 시 호전), 포도막염, 천장관절 압통 → 강직성 척추염. HLA-B27과 천장관절 영상을 확인해요.'],
+ ['여',75,'골다공증이 있는데 어제 엉덩방아를 찧고 나서 허리가 너무 아파요.','134/80,84,16,36.5',{spine:['흉요추 이행부 극돌기 타진 압통','압박골절 소견이에요.','아야, 거기요!','ouch']},'요추 압박골절','골다공증 고령 여성, 경미한 외상 후 급성 요통, 극돌기 타진 압통 → 요추 압박골절. X-ray와 골다공증 치료를 설명해요.']
+],
+rash:[
+ ['여',28,'며칠 전부터 정강이에 붉고 아픈 멍울이 생겼어요. 목도 좀 아팠어요.','116/72,80,16,37.4',{skin:['양측 정강이의 압통성 홍반 결절','결절성 홍반이에요.']},'결절성 홍반','정강이의 압통성 홍반 결절, 선행 인후염 → 결절성 홍반. 원인 질환(연쇄상구균, 결핵, IBD 등)을 찾아요.'],
+ ['남',20,'어릴 때부터 팔 오금이랑 목이 가렵고 건조해요. 겨울에 더 심해요.','118/74,72,16,36.5',{skin:['팔오금·목의 태선화, 건조한 피부, 긁은 자국','아토피 피부염 소견이에요.'],dermo:['백색 피부묘기증','아토피 피부염에서 보여요.']},'아토피 피부염','어릴 때부터 반복되는 굴측부 가려운 습진, 건조, 태선화 → 아토피 피부염. 보습과 국소 스테로이드를 교육해요.'],
+ ['여',80,'요양병원에 있는데 밤마다 너무 가려워요. 같은 방 할머니들도 가렵대요.','128/78,76,16,36.5',{skin:['손가락 사이와 손목 굴곡부의 굴(burrow)과 구진','옴의 특징적 소견이에요.']},'옴','집단생활, 야간 가려움, 동거인 증상, 손가락 사이 굴 → 옴. 가족·동거인 동시 치료와 침구 세탁을 교육해요.'],
+ ['남',6,'(엄마) 어제부터 열이 나더니 몸통부터 물집이 생겨서 얼굴로 번져요. 가려워해요.','104/64,108,20,38.2',{skin:['몸통 중심으로 홍반·수포·가피가 함께 있는 발진','여러 단계 병변 공존은 수두의 특징이에요.']},'수두','발열과 함께 몸통에서 시작된 여러 단계의 수포성 발진 → 수두. 모든 병변에 가피가 앉을 때까지 격리해요.'],
+ ['남',30,'새우를 먹고 나서 온몸에 두드러기가 나고 숨이 차요.','88/50,122,26,36.8',{skin:['전신 팽진(두드러기)','알레르기 반응이에요.'],lung:['양측 천명음','기도 협착 소견이에요.']},'아나필락시스','알레르기 유발 음식 후 두드러기, 호흡곤란, 저혈압 → 아나필락시스. 즉시 에피네프린 근주가 필요한 응급이에요.']
+],
+mood:[
+ ['남',25,'요즘 잠을 안 자도 기운이 넘치고 카드로 물건을 막 사요. 친구들이 말이 너무 빠르대요. 작년엔 우울했어요.','128/80,88,16,36.6',{},'양극성 장애','우울 삽화 과거력과 현재 수면 욕구 감소, 과소비, 사고 비약 → 양극성 장애. 항우울제 단독 사용은 조증을 유발할 수 있어요.'],
+ ['여',55,'요즘 우울하고 기운이 없어요. 추위를 타고 살이 쪘어요.','128/84,56,14,36.1',{thyroid:['갑상샘 미만성 비대','갑상샘 기능저하증 소견이에요.'],dtr:['반사의 이완기 지연','갑상샘 기능저하증의 특징이에요.']},'갑상샘 기능 저하증','우울감과 무기력, 추위 불내성, 서맥, 갑상샘 비대, 반사 이완 지연 → 갑상샘 기능저하증에 의한 우울 증상. TFT를 먼저 확인해요.'],
+ ['남',30,'한 달 전 이직하고 나서 우울하고 불안해요. 회사 일 생각하면 잠이 안 와요.','122/78,78,16,36.5',{},'적응장애','뚜렷한 스트레스 요인 후 3개월 이내 발생한 우울·불안, 주요우울장애 기준 미충족 → 적응장애. 상담과 스트레스 관리를 권해요.'],
+ ['남',68,'두 달 전에 뇌졸중이 왔었는데, 그 뒤로 기분이 가라앉고 아무것도 하기 싫어요.','146/88,74,16,36.5',{motor:['우측 상하지 IV/V','뇌졸중 후유증이에요.'],dtr:['우측 반사 항진','상위운동신경원 병변이에요.']},'뇌졸중','뇌졸중 후 발생한 우울감과 편측 신경학적 결손 → 뇌졸중 후 우울증. 재활과 함께 우울증 치료를 해요.']
+],
+anx:[
+ ['여',40,'반년 넘게 사소한 일까지 늘 걱정돼요. 어깨가 항상 뭉쳐 있고 잠을 설쳐요.','124/78,80,16,36.5',{},'범불안장애','6개월 이상 여러 주제에 대한 조절 안 되는 걱정, 근긴장, 수면장애 → 범불안장애. 인지행동치료와 SSRI를 설명해요.'],
+ ['여',30,'요즘 이유 없이 초조하고 불안해요. 가슴이 두근거리고 살이 빠졌어요.','138/70,112,18,37.2',{thyroid:['갑상샘 미만성 비대','갑상샘기능항진증 소견이에요.'],pulse:['빈맥, 규칙적','갑상샘 호르몬 과다예요.'],tremor:['미세한 손떨림','갑상샘 항진증의 떨림이에요.']},'갑상샘기능항진증','불안·초조, 두근거림, 체중감소, 빈맥, 손떨림, 갑상샘 비대 → 갑상샘기능항진증. TFT로 확인해요.'],
+ ['남',65,'가슴이 두근거리면서 불안해져요. 가끔 어지러워요.','142/86,108,18,36.6',{pulse:['불규칙하게 불규칙한 맥박','심방세동을 시사해요.'],heart:['불규칙한 리듬','부정맥 소견이에요.']},'부정맥','고령 환자의 두근거림과 불안, 불규칙한 맥박 → 심방세동 등 부정맥. 심전도가 필요해요.']
+],
+sleep:[
+ ['여',45,'석 달째 잠들기가 힘들고 자다가 자꾸 깨요. 누우면 이런저런 걱정이 들어요.','120/76,74,16,36.5',{},'불면장애','3개월 이상, 주 3회 이상 입면·유지 곤란, 다른 수면장애 소견 없음 → 불면장애. 수면 위생과 불면증 인지행동치료를 교육해요.'],
+ ['여',50,'저녁에 누우면 다리 속에 벌레가 기어가는 것 같아서 움직여야 해요. 움직이면 나아요.','118/74,76,16,36.5',{conj:['결막 창백','철결핍 동반 가능성이에요.']},'하지불안 증후군','저녁·휴식 시 악화되는 다리 불편감과 움직이고 싶은 충동, 움직이면 호전, 빈혈 소견 → 하지불안 증후군. 페리틴을 확인하고 철분을 보충해요.'],
+ ['남',22,'새벽 4시는 돼야 잠이 오고 낮 12시에 일어나요. 아침 수업에 계속 못 가요.','118/74,70,16,36.5',{},'일주기리듬 수면장애','늦게 자고 늦게 일어나는 고정된 수면 패턴, 수면의 질은 정상 → 지연성 수면위상 증후군. 아침 빛 노출과 멜라토닌을 권해요.']
+],
+memory:[
+ ['여',70,'요즘 약속을 자주 잊어버려요. 그래도 장보기나 은행 일은 혼자 다 해요.','132/80,72,16,36.5',{mmse:['MMSE-K 26점 (회상 약간 저하)','경미한 인지 저하예요.']},'경도인지장애','본인이 호소하는 기억력 저하, 일상생활 기능 유지, 경미한 인지검사 저하 → 경도인지장애. 정기 추적과 인지 활동을 권해요.'],
+ ['여',68,'요즘 깜빡깜빡하고 멍해요. 추위를 많이 타고 기운이 없어요.','128/82,54,14,36.1',{mmse:['MMSE-K 23점','인지 저하예요.'],thyroid:['갑상샘 미만성 비대','갑상샘 기능저하증 소견이에요.'],dtr:['반사의 이완기 지연','갑상샘 기능저하증의 특징이에요.']},'갑상샘기능저하증','인지 저하, 추위 불내성, 서맥, 갑상샘 비대, 반사 이완 지연 → 갑상샘 기능저하증에 의한 가역적 인지 저하. TFT를 확인해요.'],
+ ['남',72,'아내가 떠난 뒤로 기억이 안 나요. 뭘 물어봐도 모르겠어요.','130/80,72,16,36.5',{mmse:['MMSE-K 22점, "모르겠다"는 대답이 많고 노력이 부족함','가성치매의 특징이에요.']},'우울증 (가성치매)','상실 후 갑자기 시작된 인지 저하 호소, 검사 중 "모르겠다" 반응 → 우울증에 의한 가성치매. 우울증 치료로 회복될 수 있어요.'],
+ ['남',58,'(보호자) 원래 점잖던 사람이 요즘 아무 데서나 화내고 엉뚱한 행동을 해요. 기억은 그럭저럭 해요.','128/80,74,16,36.5',{mmse:['MMSE-K 27점','기억력은 비교적 보존돼 있어요.']},'전두측두엽 치매','비교적 젊은 나이, 성격 변화와 탈억제가 기억력 저하보다 먼저 → 전두측두엽 치매. 뇌 MRI에서 전두·측두엽 위축을 확인해요.']
+],
+dizzy:[
+ ['여',45,'몇 시간씩 빙빙 도는 어지럼이 오고, 그때마다 오른쪽 귀가 먹먹하고 삐 소리가 나요.','124/78,76,16,36.5',{hearing:['웨버 검사 좌측 편위, 린네 양측 양성','우측 감각신경성 난청이에요.']},'메니에르병','수 시간 지속되는 반복성 회전성 어지럼, 이충만감, 이명, 감각신경성 난청 → 메니에르병. 저염식과 청력검사를 교육해요.'],
+ ['남',40,'감기를 앓고 나서 어제부터 세상이 빙빙 돌고 토해요. 가만히 있어도 계속 어지러워요. 귀는 잘 들려요.','128/80,84,16,36.6',{nystag:['우측을 향하는 수평회선 자발안진, 좌측 머리충동검사 양성','좌측 말초 전정 손상 소견이에요.'],gait:['좌측으로 기울어짐','전정 기능 저하 쪽으로 쏠려요.'],romberg:['눈 감으면 좌측으로 기울어짐','말초성 전정 장애 소견이에요.']},'전정신경염','감염 후 하루 이상 지속되는 급성 회전성 어지럼, 청력 정상, 일방향 안진, 머리충동검사 양성 → 전정신경염. 전정재활운동을 교육해요.'],
+ ['남',70,'고혈압, 당뇨가 있어요. 갑자기 어지럽고 똑바로 걸을 수가 없어요.','168/96,80,16,36.6',{nystag:['방향이 바뀌는 안진, 머리충동검사 정상','중추성 어지럼을 시사해요.'],cerebellar:['우측 손코검사 겨냥이상, 빠른교대운동 장애','우측 소뇌 병변이에요.'],gait:['실조성 보행, 혼자 서기 어려움','소뇌 기능 저하예요.']},'소뇌경색','혈관 위험인자, 급성 어지럼과 보행 불능, 방향이 바뀌는 안진, 정상 머리충동검사, 소뇌 징후 → 소뇌경색. 즉시 뇌 MRI가 필요해요.']
+],
+head:[
+ ['여',25,'오른쪽 머리가 욱신욱신 아프고 속이 울렁거려요. 빛이랑 소리가 싫어요. 생리 전에 자주 이래요.','116/72,76,16,36.5',{},'편두통','반복성 편측 박동성 두통, 구역, 빛·소리 과민, 신경학적 진찰 정상 → 편두통. 두통 일기와 급성기·예방 치료를 설명해요.'],
+ ['남',35,'머리를 띠로 꽉 조이는 것처럼 양쪽이 아파요. 오후에 심하고 스트레스 받으면 더해요.','124/78,74,16,36.5',{trauma:['후두부와 목 근육 압통, 외상 없음','근육 긴장 소견이에요.']},'긴장성 두통','양측 조이는 양상, 오후 악화, 스트레스 연관, 신경학적 진찰 정상 → 긴장성 두통. 스트레칭과 자세 교정을 교육해요.'],
+ ['남',30,'매일 밤 같은 시간에 오른쪽 눈 뒤가 송곳으로 찌르듯 한 시간쯤 아파요. 눈물이 나고 코가 막혀요.','128/80,86,16,36.5',{eye_red:['우측 결막 충혈, 눈물, 경한 안검하수','군발 두통의 자율신경 증상이에요.']},'군발 두통','젊은 남성, 매일 같은 시간 편측 안와 주위 극심한 통증, 동측 자율신경 증상 → 군발 두통. 발작 시 고농도 산소와 트립탄을 써요.'],
+ ['남',20,'어제부터 열이 나고 머리가 깨질 것 같아요. 토했어요.','122/76,112,20,39.2',{mening:['경부강직, Kernig·Brudzinski 양성','수막 염증 소견이에요.','목이 안 숙여져요!','ouch']},'뇌수막염','발열, 심한 두통, 구토, 수막자극징후 양성 → 뇌수막염. 요추천자와 경험적 항생제가 필요해요.'],
+ ['여',72,'한 달 전부터 관자놀이가 아프고 밥 먹을 때 턱이 아파요. 어깨도 뻣뻣해요.','136/82,80,16,37.4',{temporal:['우측 측두동맥 압통, 비후, 박동 감소','측두동맥염 소견이에요.','거기 누르면 아파요.','ouch']},'측두동맥염','고령, 새로 생긴 관자놀이 두통, 턱 파행, 측두동맥 압통·박동 감소 → 측두동맥염. 실명 위험으로 즉시 스테로이드를 시작해요.']
+],
+seiz:[
+ ['남',30,'이상한 냄새가 나다가 멍해지고 입맛을 다신대요. 저는 기억이 안 나요.','124/78,76,16,36.5',{},'측두엽 뇌전증','후각 전조, 의식 저하와 입맛 다심 같은 자동증, 발작 후 기억 없음 → 측두엽 뇌전증(초점성 발작). 뇌파와 MRI를 해요.'],
+ ['남',2,'(엄마) 열이 39도 넘게 나다가 갑자기 온몸을 2분 정도 떨었어요. 지금은 잘 놀아요.','96/60,130,26,39.3',{},'열성경련','6개월~5세, 발열 중 15분 미만 전신 경련, 빠른 회복, 수막자극징후 음성 → 단순 열성경련. 대부분 양호함을 안심시키고 경련 시 대처를 교육해요.'],
+ ['여',20,'이틀 전부터 열이 나고 머리가 아팠는데 오늘 경련을 했어요.','118/72,114,20,39.4',{mening:['경부강직, Kernig·Brudzinski 양성','수막 염증 소견이에요.','목이 너무 아파요!','ouch']},'뇌수막염','발열·두통 후 경련, 수막자극징후 양성 → 뇌수막염(뇌염). 요추천자와 항생제·항바이러스제가 필요해요.'],
+ ['남',70,'(보호자) 경련을 한 뒤로 오른쪽 팔다리를 못 쓰고 말이 어눌해요.','172/96,84,16,36.6',{cn4:['우측 하부 안면 마비 (이마 주름은 보존)','중추성 안면마비예요.'],motor:['우측 상하지 III/V','편마비예요.'],dtr:['우측 반사 항진','상위운동신경원 병변이에요.']},'뇌졸중','고령, 경련과 함께 발생한 편마비와 중추성 안면마비 → 뇌졸중에 의한 증상성 경련. 즉시 뇌 CT/MRI가 필요해요.']
+],
+weak:[
+ ['남',68,'한 시간 전 갑자기 오른쪽 팔다리에 힘이 빠지고 말이 어눌해졌어요. 심장이 불규칙하게 뛴대요.','168/96,104,18,36.6',{cn4:['우측 하부 안면 마비 (이마 보존)','중추성 안면마비예요.'],heart:['불규칙한 리듬','심방세동, 색전 원인이에요.'],sensory:['우측 감각 저하','편측 감각 결손이에요.'],motor:['우측 상하지 II/V','편마비예요.'],dtr:['우측 반사 항진','상위운동신경원 병변이에요.'],patho:['우측 Babinski 양성','상위운동신경원 병변이에요.']},'뇌졸중','심방세동 환자의 갑작스런 편마비, 구음장애, 중추성 안면마비 → 허혈성 뇌졸중. 발병 시각 확인과 즉시 뇌영상, 혈전용해 적응증을 평가해요.'],
+ ['남',25,'어젯밤 라면이랑 술을 먹고 잤는데 아침에 팔다리가 안 움직여요. 요즘 더위를 많이 타요.','132/74,104,18,36.9',{thyroid:['갑상샘 미만성 비대','갑상샘기능항진증 소견이에요.'],motor:['근위부 위주 사지 II/V, 대칭적','주기마비 소견이에요.'],dtr:['사지 반사 감소','저칼륨 소견이에요.']},'저칼륨 주기마비','젊은 남성, 고탄수화물·음주 후 아침 대칭성 근위부 마비, 감각 정상, 갑상샘 비대 → 갑상샘중독성 저칼륨 주기마비. 칼륨과 TFT를 확인해요.'],
+ ['여',30,'오후만 되면 눈꺼풀이 처지고 물체가 두 개로 보여요. 자고 나면 괜찮아요.','116/72,74,16,36.5',{cn4:['지속 상방 주시 시 양측 안검하수 악화, 복시','중증 근무력증의 특징이에요.'],motor:['반복 운동 시 근위부 근력 저하','피로성 근력저하예요.']},'중증 근무력증','하루 중 악화되고 휴식 시 호전되는 안검하수·복시, 피로성 근력저하, 반사·감각 정상 → 중증 근무력증. 항AChR 항체와 흉선 CT를 확인해요.'],
+ ['남',60,'당뇨가 15년 됐어요. 양쪽 발이 화끈거리고 저려요. 양말 신은 것 같아요.','138/84,76,16,36.5',{sensory:['양측 발목 아래 장갑-양말형 감각 저하, 진동감각 저하','말초신경병증이에요.'],dtr:['양측 발목 반사 소실','말초신경병증 소견이에요.']},'당뇨병성 신경병증','장기 당뇨, 대칭성 원위부 감각 이상, 발목 반사 소실 → 당뇨병성 말초신경병증. 혈당 조절과 발 관리를 교육해요.']
+],
+coma:[
+ ['남',75,'(보호자) 당뇨약을 먹고 아침을 안 드셨는데 식은땀을 흘리시더니 불러도 대답이 없어요.','138/84,104,16,36.2',{vatga:['기도 개방, 자발호흡, 외상 없음, GCS 10, 혈당 38 mg/dL','저혈당이에요. 바로 포도당을 줘요.'],consc:['지남력 저하','의식 저하예요.']},'저혈당 혼수','혈당강하제 복용 후 식사 거름, 식은땀, 의식 저하, 혈당 38 → 저혈당 혼수. 즉시 포도당 정주 후 재발 여부를 관찰해요.'],
+ ['남',65,'(보호자) 고혈압약을 안 드셨는데 갑자기 머리가 아프다고 하시더니 쓰러지셨어요.','204/112,62,14,36.8',{vatga:['기도 개방, 자발호흡, 외상 없음, GCS 8, 혈당 정상','중증 의식저하. 기도 확보를 준비해요.'],pupil:['좌측 동공 산대, 대광반사 소실','뇌 탈출 위험 소견이에요.'],motor:['우측 편마비','국소 신경학적 결손이에요.'],patho:['우측 Babinski 양성','상위운동신경원 병변이에요.']},'뇌졸중','조절 안 된 고혈압, 급성 두통 후 의식저하, 편측 동공 산대와 편마비 → 뇌출혈. 즉시 뇌 CT와 신경외과 협진이 필요해요.'],
+ ['남',58,'(보호자) 간경화가 있는데 며칠 변을 못 보더니 헛소리를 하고 자꾸 졸아요.','112/70,90,16,36.8',{vatga:['기도 개방, 자발호흡, 외상 없음, GCS 13, 혈당 정상','중등도 의식 저하예요.'],consc:['시간·장소 지남력 저하','의식 혼동이에요.'],mouth_special:['달큰한 간성 구취','간성뇌증의 단서예요.'],ascites:['이동탁음 양성','복수가 있어요.']},'간성 혼수','간경변, 변비 후 혼동·졸림, 간성 구취, 복수 → 간성뇌증. 락툴로오스와 유발요인 교정을 해요.'],
+ ['여',22,'(친구) 어제부터 열이 나고 머리가 아프다더니 오늘은 불러도 잘 못 일어나요.','112/68,118,20,39.5',{vatga:['기도 개방, 자발호흡, 외상 없음, GCS 11, 혈당 정상','의식 저하예요.'],mening:['경부강직, Kernig·Brudzinski 양성','수막 염증 소견이에요.']},'뇌수막염','고열, 두통 후 의식저하, 수막자극징후 양성 → 세균성 뇌수막염. 혈액배양 후 즉시 항생제와 요추천자를 해요.']
+],
+tremor:[
+ ['남',55,'글씨 쓰거나 컵을 들 때 손이 떨려요. 술을 마시면 좀 나아져요. 아버지도 그랬어요.','128/80,74,16,36.5',{tremor:['양손 자세·운동 시 떨림, 안정 시 없음, 머리 떨림','본태성 떨림의 특징이에요.']},'본태성 떨림','가족력, 양측 자세·운동 떨림, 알코올로 호전, 강직·서동 없음 → 본태성 떨림. 프로프라놀롤을 설명해요.'],
+ ['여',25,'시험 기간이라 커피를 하루 다섯 잔 마셔요. 손이 떨리고 가슴이 두근거려요.','126/78,98,16,36.6',{tremor:['양손 미세한 자세 떨림','생리적 떨림이 증폭된 상태예요.']},'생리적 떨림','카페인 과다, 불안, 양측 미세 자세 떨림, 갑상샘·신경학적 이상 없음 → 증강된 생리적 떨림. 카페인 줄이기를 교육해요.'],
+ ['남',70,'갑자기 물건을 잡으려고 하면 손이 크게 떨리고 걸을 때 휘청거려요.','162/94,78,16,36.6',{tremor:['목표에 가까워질수록 커지는 의도 떨림','소뇌성 떨림이에요.'],cerebellar:['좌측 손코검사 겨냥이상, 빠른교대운동 장애','좌측 소뇌 병변이에요.'],gait:['넓은 보폭의 실조성 보행','소뇌 기능 저하예요.']},'소뇌 경색','혈관 위험인자, 급성 의도 떨림과 실조 → 소뇌 경색. 뇌 MRI가 필요해요.'],
+ ['여',30,'손이 떨리고 더위를 못 참고 살이 빠졌어요.','136/70,110,18,37.2',{thyroid:['갑상샘 미만성 비대, 잡음','갑상샘기능항진증 소견이에요.'],tremor:['양손 미세한 자세 떨림','갑상샘 항진증의 떨림이에요.']},'갑상샘기능항진증','미세한 자세 떨림, 더위 불내성, 체중감소, 갑상샘 비대 → 갑상샘기능항진증. TFT로 확인해요.']
+],
+bpain:[
+ ['여',29,'아기 젖을 먹이는데 오른쪽 가슴이 빨갛게 붓고 뜨겁고 아파요. 열도 나요.','116/72,104,18,38.6',{breast_insp:['우측 상외측 발적·부종','유방염 소견이에요.'],breast_palp:['열감과 압통, 파동 없음','유방염 소견. 파동이 있으면 농양을 의심해요.','아야, 너무 아파요.','ouch']},'유방염','수유 중 편측 유방 발적·열감·압통과 발열 → 수유기 유방염. 수유를 계속하고 항생제를 써요.'],
+ ['여',20,'생리 전에 양쪽 가슴이 살짝 뻐근해요. 생리하면 괜찮아져요.','112/70,72,16,36.5',{},'생리적 유방통','월경 전 경미한 양측 통증, 진찰 정상 → 생리적(주기성) 유방통. 안심시키고 잘 맞는 속옷을 권해요.'],
+ ['여',30,'아기 낳은 지 사흘째인데 양쪽 가슴이 돌처럼 단단하고 아파요.','118/74,84,16,37.4',{breast_palp:['양측 유방 전반적 단단함과 압통, 국소 발적 없음','유방 울혈 소견이에요.']},'유방 울혈','산후 초기 양측 유방의 전반적 팽만과 압통, 국소 염증 소견 없음 → 유방 울혈. 자주 수유하기와 냉찜질을 교육해요.']
+],
+bmass:[
+ ['여',55,'오른쪽 가슴에 아프지 않은 단단한 멍울이 만져져요. 피부가 당기는 것 같아요.','128/80,76,16,36.5',{breast_insp:['우측 피부 함몰과 귤껍질 모양 변화, 유두 함몰','유방암을 시사해요.'],breast_palp:['우측 3cm, 단단하고 경계 불규칙하며 고정된 무통성 종괴','악성 종괴의 특징이에요.'],axilla:['우측 겨드랑이 단단한 림프절 촉지','림프절 전이 가능성이에요.']},'유방암','고령, 단단하고 고정된 불규칙 종괴, 피부·유두 함몰, 겨드랑이 림프절 → 유방암. 유방촬영술·초음파와 조직검사가 필요해요.'],
+ ['여',42,'오른쪽 유두에서 피 섞인 분비물이 나와요.','120/76,74,16,36.5',{nipple:['우측 단일 유관의 혈성 분비물','관내유두종을 시사해요.'],breast_palp:['유륜 아래 작은 연성 종괴','유관 내 병변이에요.']},'관내유두종','편측 단일 유관의 혈성 유두 분비물 → 관내유두종. 유방암 감별을 위해 초음파와 유관조영술을 해요.'],
+ ['여',45,'며칠 전 갑자기 동그란 말랑한 멍울이 생겼어요. 생리 전에 좀 아파요.','118/74,72,16,36.5',{breast_palp:['좌측 2cm, 경계 명확하고 말랑하며 약간 압통 있는 이동성 종괴','유방낭종 소견이에요.']},'유방낭종','폐경 전 여성, 갑자기 생긴 말랑하고 경계 명확한 종괴 → 유방낭종. 초음파로 확인하고 필요시 흡인해요.'],
+ ['여',40,'몇 달 사이 가슴 멍울이 엄청 빨리 커졌어요.','122/78,76,16,36.5',{breast_insp:['좌측 유방 비대, 피부 늘어남과 정맥 확장','빠르게 자란 큰 종괴예요.'],breast_palp:['좌측 6cm, 경계 명확한 이동성 종괴','엽상종양 소견이에요.']},'엽상종양','40대, 빠르게 커지는 큰 경계 명확 종괴 → 엽상종양. 조직검사 후 넓은 절제가 필요해요.']
+],
+vdis:[
+ ['여',28,'분비물에서 생선 비린내가 나고 회색이에요. 관계 후에 더 심해요. 가렵지는 않아요.','114/72,74,16,36.6',{pelvic:['회색의 균질한 분비물, 질벽 염증 없음','세균성 질증 소견이에요.'],vag_dis:['pH 4.5 초과, Whiff 검사 양성, clue cell','세균성 질증 진단 기준이에요.']},'세균성 질증','생선 비린내 회색 분비물, 염증 없음, pH 상승·Whiff 양성·clue cell → 세균성 질증. 메트로니다졸을 써요.'],
+ ['여',25,'새 남자친구가 생겼는데 거품 같은 누런 초록색 분비물이 나오고 가려워요.','116/74,76,16,36.7',{pelvic:['거품 많은 황록색 분비물, 딸기 모양 자궁경부','편모충 질염 소견이에요.'],vag_dis:['pH 4.5 초과, 운동성 편모충 관찰','편모충 감염이에요.']},'편모충 질염','새 성파트너, 거품 황록색 분비물, 딸기 모양 자궁경부, 운동성 편모충 → 편모충 질염. 파트너 동시 치료가 필요해요.'],
+ ['여',60,'폐경된 지 10년인데 질이 건조하고 관계할 때 아파요. 분비물이 조금 있어요.','126/80,72,16,36.5',{pelvic:['창백하고 얇은 질점막, 주름 소실','위축성 변화예요.'],vag_dis:['pH 상승, 백혈구 증가','위축성 질염 소견이에요.']},'위축성 질염','폐경 후 질 건조, 성교통, 얇고 창백한 점막 → 위축성 질염. 질 윤활제와 국소 에스트로겐을 설명해요.'],
+ ['여',24,'며칠 전부터 아랫배가 아프고 열이 나요. 분비물이 누렇게 늘었어요.','114/70,106,18,38.4',{bladder:['양측 하복부 압통','골반 내 염증이에요.'],pelvic:['자궁경부 움직임 압통, 양측 부속기 압통, 화농성 분비물','골반염의 진단 기준이에요.','아… 아파요.','ouch']},'골반염','발열, 하복부 통증, 화농성 분비물, 자궁경부 움직임 압통 → 골반염. 항생제와 파트너 치료를 설명해요.']
+],
+vbleed:[
+ ['여',42,'생리 양이 많아지고 생리 사이에도 피가 비쳐요.','118/74,84,16,36.5',{bladder:['치골상부 단단한 종괴','커진 자궁이에요.'],pelvic:['자궁이 불규칙하게 커짐, 압통 없음','자궁근종 소견이에요.']},'자궁근종','월경과다와 부정출혈, 불규칙하게 커진 자궁 → 자궁근종. 골반 초음파로 확인해요.'],
+ ['여',52,'생리가 끊길 무렵인데 불규칙하게 피가 많이 나요. 살이 좀 쪘어요.','136/86,78,16,36.5',{},'자궁내막증식증','폐경 이행기 비만 여성의 불규칙 출혈, 골반 진찰 정상 → 자궁내막증식증 의심. 초음파로 내막 두께를 보고 내막 조직검사를 해요.'],
+ ['여',25,'관계 후에 피가 조금 비치고 분비물이 늘었어요.','114/72,76,16,36.6',{pelvic:['자궁경부 발적, 점액고름성 분비물, 접촉 시 쉽게 출혈','자궁경부염 소견이에요.'],pap:['자궁경부 염증 소견, 종괴 없음','세포검사와 성매개감염 검사를 함께 해요.']},'자궁경부염','성교 후 출혈, 점액고름성 분비물, 쉽게 출혈하는 염증성 경부 → 자궁경부염. 클라미디아·임균 검사와 치료를 해요.'],
+ ['여',38,'생리가 불규칙하고 가끔 많이 나와요. 추위를 타고 살이 쪘어요.','128/84,56,14,36.1',{thyroid:['갑상샘 미만성 비대','갑상샘 기능저하증 소견이에요.']},'갑상샘 저하증','불규칙 출혈, 추위 불내성, 체중 증가, 서맥, 갑상샘 비대 → 갑상샘 기능저하증에 의한 비정상 자궁출혈. TFT를 확인해요.']
+],
+menor:[
+ ['여',45,'아이를 셋 낳았어요. 생리 양이 많고 생리통이 점점 심해져요.','118/74,86,16,36.5',{pelvic:['자궁이 전반적으로 대칭적으로 커지고 물렁하며 압통','자궁샘근증 소견이에요.']},'자궁샘근증','다산 40대, 월경과다와 점점 심해지는 월경통, 대칭적으로 커진 물렁한 자궁 → 자궁샘근증. 초음파·MRI로 확인해요.'],
+ ['여',40,'생리 양이 많아졌고 생리 사이에도 피가 조금씩 비쳐요.','116/72,80,16,36.5',{},'자궁내막 폴립','월경과다와 월경 간 점상출혈, 골반 진찰 정상 → 자궁내막 폴립. 식염수 주입 초음파와 자궁경 절제를 설명해요.'],
+ ['여',16,'초경 때부터 생리 양이 너무 많아요. 코피도 잘 나고 양치하면 잇몸에서 피가 나요.','108/66,98,16,36.5',{conj:['결막 창백','만성 출혈로 인한 빈혈이에요.'],mouth:['잇몸 출혈 흔적','출혈 경향 소견이에요.']},'응고장애','초경부터 지속된 월경과다, 코피·잇몸 출혈, 골반 진찰 정상 → 폰빌레브란트병 등 응고장애. 응고검사를 해요.'],
+ ['여',50,'생리가 불규칙하게 오다가 한 번 오면 양이 엄청 많아요. 살이 많이 쪘어요.','138/88,80,16,36.5',{},'자궁내막증식증','무배란성 불규칙 월경과 과다 출혈, 비만 → 자궁내막증식증 의심. 내막 조직검사를 해요.']
+],
+amen:[
+ ['여',27,'생리가 두 달째 없고 속이 메스꺼워요. 가슴이 커지고 아파요. 테스트는 아직 안 해봤어요.','112/70,82,16,36.8',{pelvic:['자궁 약간 커지고 부드러움, 자궁경부 청색 변화','임신 소견이에요.']},'임신','가임기 무월경, 입덧, 유방 변화, 커지고 부드러운 자궁 → 임신. 무월경은 항상 임신부터 배제해요.'],
+ ['여',30,'생리가 안 나오고 젖이 나와요. 머리가 아프고 옆이 잘 안 보여요.','118/74,74,16,36.5',{visual:['양이측 반맹','시신경교차 압박 소견이에요.']},'프로락틴종','무월경, 유즙분비, 두통, 양이측 반맹 → 프로락틴종(뇌하수체 선종). 프로락틴 검사와 뇌하수체 MRI를 해요.'],
+ ['여',28,'생리가 석 달째 없어요. 더위를 못 참고 가슴이 두근거리고 살이 빠졌어요.','134/68,110,18,37.2',{thyroid:['갑상샘 미만성 비대, 잡음','갑상샘기능항진증 소견이에요.']},'갑상샘기능항진증','무월경, 체중감소, 빈맥, 더위 불내성, 갑상샘 비대 → 갑상샘기능항진증. TFT로 확인해요.']
+],
+dysm:[
+ ['여',17,'초경 1년 뒤부터 생리 첫날 아랫배가 쥐어짜듯 아파요. 진통제를 먹으면 나아요.','110/68,74,16,36.5',{},'원발성 월경통','초경 1~2년 후 시작, 월경 첫날 경련성 통증, 진통제 반응, 진찰 정상 → 원발성 월경통. 월경 시작 전 NSAIDs 복용을 교육해요.'],
+ ['여',40,'생리통이 심해지고 양도 많아졌어요. 아랫배에 뭐가 만져져요.','118/74,82,16,36.5',{bladder:['치골상부 단단한 종괴','커진 자궁이에요.'],pelvic:['자궁이 불규칙하게 커짐','자궁근종 소견이에요.']},'자궁근종','속발성 월경통과 월경과다, 불규칙하게 커진 자궁 → 자궁근종. 골반 초음파로 확인해요.'],
+ ['여',44,'아이를 둘 낳았는데 생리통이 점점 심해지고 양도 많아요.','116/72,80,16,36.5',{pelvic:['자궁이 대칭적으로 커지고 물렁하며 압통','자궁샘근증 소견이에요.','아, 거기가 아파요.','ouch']},'자궁샘근증','다산 40대, 점점 심해지는 월경통과 월경과다, 대칭적으로 커진 압통성 자궁 → 자궁샘근증. MRI로 확인해요.']
+],
+prenat:[
+ ['여',35,'임신 32주인데 갑자기 배가 딱딱하게 아프고 검붉은 피가 나와요. 혈압이 높았어요.','150/96,112,20,36.8',{ab_palp:['자궁이 판자처럼 단단하고 압통','태반조기박리의 특징이에요.','배가 너무 아파요!','ouch'],leopold:['자궁이 단단해 태위 확인이 어려움','태반조기박리 소견이에요.']},'태반조기박리','임신 후반기 고혈압 산모의 갑작스런 복통, 검붉은 출혈, 단단한 압통성 자궁 → 태반조기박리. 태아 감시와 응급 분만을 준비해요.'],
+ ['여',33,'임신 30주인데 아프지 않은데 선홍색 피가 갑자기 나왔어요.','116/72,96,18,36.6',{ab_palp:['자궁이 부드럽고 압통 없음','통증 없는 출혈은 전치태반을 시사해요.'],leopold:['선진부가 골반에 진입하지 않고 높이 떠 있음','전치태반 소견이에요.']},'전치태반','임신 후반기 무통성 선홍색 출혈, 부드러운 자궁, 선진부 미진입 → 전치태반. 초음파 확인 전까지 내진은 금기예요.'],
+ ['여',34,'임신 26주예요. 당 선별검사에서 높게 나왔어요. 가족 중에 당뇨가 있어요.','124/78,80,16,36.5',{anthro:['임신 전보다 체중 증가 폭이 큼','체중 관리가 필요해요.'],leopold:['자궁저부 높이가 임신 주수보다 큼','거대아 가능성이에요.']},'임신성 당뇨','임신 24~28주 선별검사 이상, 가족력, 큰 자궁저부 높이 → 임신성 당뇨. 100g 확진검사, 식이·혈당 관리를 교육해요.'],
+ ['여',29,'임신 33주인데 아프지 않은데 갑자기 맑은 물이 주르륵 흘러요.','114/72,84,16,36.7',{},'조기 양막파수','만삭 전 진통 없는 맑은 액체 유출 → 조기 양막파수. 멸균 질경 검사로 확인하고 감염 예방을 위해 손가락 내진은 삼가요.']
+],
+growth:[
+ ['남',10,'(엄마) 반에서 작은 편이에요. 저는 150cm, 남편은 163cm예요. 그래도 매년 5cm씩은 꾸준히 커요.','-',{},'가족성 저신장','부모의 작은 키, 정상 성장 속도, 골연령 정상 → 가족성 저신장. 유전적 목표 키 안에서 정상적으로 자라고 있음을 설명해요.'],
+ ['남',8,'(엄마) 1년에 3cm도 안 커요. 통통한 편이고 성장 곡선에서 점점 떨어져요.','-',{},'성장호르몬 결핍증','연간 성장 속도 저하, 성장곡선 이탈, 통통한 체형 → 성장호르몬 결핍증 의심. 골연령과 성장호르몬 자극검사를 해요.'],
+ ['여',9,'(아빠) 작년부터 키가 잘 안 크고 피곤해하고 추위를 타요. 변비도 생겼어요.','-',{},'갑상샘 기능저하증','성장 속도 감소와 피로·추위 불내성·변비 → 후천성 갑상샘 기능저하증. TFT를 확인해요.']
+],
+vacc:[
+ ['남','12개월','(엄마) 12개월 예방접종하러 왔는데 어제부터 열이 38.5도까지 나고 처져요.','-',{},'열이 없어질 때까지 모두 연기','중등도 이상의 급성 발열 질환이 있으면 회복할 때까지 접종을 미뤄요. 열이 내리면 바로 접종하도록 예약해요.'],
+ ['여','12개월','(엄마) 지난번 백신 맞고 몇 분 만에 온몸이 붓고 숨을 못 쉬어서 응급실에 갔었어요.','-',{},'이전 접종 후 아나필락시스 → 해당 백신 영구 금기','같은 백신이나 그 성분으로 아나필락시스가 있었다면 해당 백신은 금기예요. 다른 백신은 일정대로 접종하고 알레르기 전문의 상담을 권해요.']
+],
+smoke:[
+ ['남',25,'하루에 다섯 개비 정도 피워요. 아침엔 한 시간 넘게 지나서 첫 담배를 피워요.','122/78,72,16,36.5',{},'낮은 의존도 → 행동요법만','하루 흡연량이 적고 첫 담배가 늦어 니코틴 의존도가 낮아요. 행동요법(금연 시작일, 유발 상황 회피, 금연 클리닉)을 중심으로 상담해요.']
+],
+alco:[
+ ['남',35,'일주일에 세 번 정도 소주 한 병씩 마셔요. 술 때문에 문제가 생긴 적은 없어요.','128/80,76,16,36.5',{},'위험 음주 수준, 간질환 소견 없음','사용장애 기준에는 해당하지 않지만 남성 기준 위험 음주 수준이에요. 음주량 줄이기 목표와 간기능 검사를 권해요.'],
+ ['남',55,'(간호사) 입원 사흘째인데 술을 끊은 뒤로 벽에 벌레가 보인다고 하고 손을 떨고 땀을 흘려요.','152/96,118,22,38.0',{consc:['시간·장소 지남력 저하, 환시','섬망 소견이에요.'],flap:['손의 거친 떨림, 발한','알코올 금단 증상이에요.']},'알코올 금단 섬망','마지막 음주 2~3일 후 발생한 환시, 지남력 저하, 떨림, 자율신경 항진 → 알코올 금단 섬망. 벤조디아제핀과 티아민을 투여해요.']
+],
+subs:[
+ ['남',30,'허리 수술 뒤로 마약성 진통제를 먹었는데 이제 없으면 못 살겠어요. 여러 병원에서 처방을 받았어요.','112/70,64,12,36.3',{pupil:['양측 바늘끝 동공','아편제 사용 소견이에요.'],skin:['팔의 오래된 주사 자국','정맥 주사 사용 흔적이에요.']},'아편제 사용장애','마약성 진통제의 강박적 사용, 여러 병원 처방, 축동, 주사 흔적 → 아편제 사용장애. 날록손과 대체요법, 전문 치료를 안내해요.'],
+ ['남',28,'며칠째 잠을 안 자도 괜찮아요. 누가 저를 쫓아오는 것 같아요.','158/96,120,20,38.0',{pupil:['양측 동공 산대','교감신경 항진 소견이에요.'],rhinoscope:['비중격 점막 손상','흡입 사용 흔적이에요.']},'각성제 사용장애','수면 욕구 감소, 편집 증상, 고혈압·빈맥·고열, 산동 → 각성제(메스암페타민 등) 사용장애. 중독 치료와 안전 확보를 해요.']
+],
+};
+
+// 기본 시나리오 + 추가 시나리오 합치기, 보기 풀 만들기
+CASES.forEach(c=>{
+  const base=c.v?c.v:[{sex:c.sex,age:c.age,story:c.story,vit:c.vit,ab:c.ab,dx:c.dx,sum:c.sum}];
+  const extra=(MORE[c.id]||[]).map(r=>({sex:r[0],age:r[1],story:r[2],vit:r[3],ab:r[4],dx:r[5],sum:r[6]}));
+  c.v=base.concat(extra);
+  c.pool=[...new Set([...c.v.map(x=>x.dx),...c.opts])];
+});
+const SYS_ORDER=['소화기','순환기','호흡기','비뇨기','전신','근골격·피부','정신','신경','여성','소아','상담'];
+const NAMES=['토리','뭉치','콩이','보리','몽실','두부','찹쌀','호떡','솜이','단비','구름','모찌','율무','깨비','하루','도토리'];
+
+/* ================= 캐릭터 ================= */
+const PATIENT_SVG=`
+<ellipse cx="160" cy="446" rx="90" ry="10" fill="rgba(0,0,0,.08)"/>
+<g class="part" data-region="legs" tabindex="0" role="button" aria-label="다리 진찰">
+  <rect x="120" y="322" width="34" height="104" rx="16" fill="#FFD9C4"/><rect x="166" y="322" width="34" height="104" rx="16" fill="#FFD9C4"/>
+  <ellipse cx="134" cy="430" rx="24" ry="12" fill="#FF8FA0"/><ellipse cx="186" cy="430" rx="24" ry="12" fill="#FF8FA0"/>
+  <rect class="hot" x="112" y="330" width="96" height="112" rx="18"/>
+</g>
+<g class="part" data-region="arms" tabindex="0" role="button" aria-label="팔 진찰">
+  <rect x="70" y="196" width="28" height="100" rx="14" fill="#FFD9C4" transform="rotate(8 84 196)"/>
+  <rect x="222" y="196" width="28" height="100" rx="14" fill="#FFD9C4" transform="rotate(-8 236 196)"/>
+  <rect x="68" y="184" width="40" height="56" rx="20" fill="#7FBFE6" transform="rotate(10 88 184)"/>
+  <rect x="212" y="184" width="40" height="56" rx="20" fill="#7FBFE6" transform="rotate(-10 232 184)"/>
+  <rect class="hot" x="56" y="182" width="50" height="96" rx="20"/><rect class="hot" x="214" y="182" width="50" height="96" rx="20"/>
+</g>
+<g>
+  <path d="M104 186 Q160 170 216 186 L230 332 Q160 350 90 332 Z" fill="#8CC8EA"/>
+  <g fill="#fff" opacity=".55"><circle cx="128" cy="212" r="4"/><circle cx="190" cy="222" r="4"/><circle cx="150" cy="300" r="4"/><circle cx="204" cy="300" r="4"/><circle cx="116" cy="270" r="4"/><circle cx="170" cy="262" r="4"/></g>
+  <path d="M140 188 L160 214 L180 188" fill="none" stroke="#5FA6D0" stroke-width="4" stroke-linecap="round"/>
+  <path d="M108 244 Q160 252 212 244" fill="none" stroke="#6FB2DA" stroke-width="3" stroke-dasharray="3 6" stroke-linecap="round"/>
+</g>
+<g class="part" data-region="chest" tabindex="0" role="button" aria-label="가슴 진찰"><path class="hot" d="M108 192 Q160 178 212 192 L214 240 Q160 250 106 240 Z"/></g>
+<g class="part" data-region="belly" tabindex="0" role="button" aria-label="배 진찰"><path class="hot" d="M106 250 Q160 258 214 250 L226 328 Q160 344 94 328 Z"/></g>
+<g class="part" data-region="hand" tabindex="0" role="button" aria-label="손 진찰">
+  <circle cx="76" cy="300" r="17" fill="#FFD9C4" stroke="#F0B9A0" stroke-width="2"/><circle cx="244" cy="300" r="17" fill="#FFD9C4" stroke="#F0B9A0" stroke-width="2"/>
+  <circle class="hot" cx="76" cy="300" r="22"/><circle class="hot" cx="244" cy="300" r="22"/>
+</g>
+<g class="part" data-region="neck" tabindex="0" role="button" aria-label="목 진찰">
+  <rect x="144" y="160" width="32" height="30" rx="8" fill="#FFD0B8"/><rect class="hot" x="136" y="164" width="48" height="24" rx="10"/>
+</g>
+<g class="part" data-region="head" tabindex="0" role="button" aria-label="머리 진찰">
+  <circle cx="160" cy="104" r="72" fill="#FFE2D0"/>
+  <path d="M88 100 Q86 30 160 30 Q236 30 232 100 Q214 70 186 66 Q170 80 138 70 Q108 66 88 100Z" fill="#6B4A3A"/>
+  <path d="M158 32 q10 -18 22 -8" fill="none" stroke="#6B4A3A" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="116" cy="140" rx="12" ry="7" fill="#FF9FB0" opacity=".7"/><ellipse cx="204" cy="140" rx="12" ry="7" fill="#FF9FB0" opacity=".7"/>
+  <circle class="hot" cx="160" cy="70" r="50"/>
+</g>
+<g class="part" data-region="ears" tabindex="0" role="button" aria-label="귀 진찰">
+  <circle cx="88" cy="112" r="13" fill="#FFD9C4" stroke="#F0B9A0" stroke-width="2"/><circle cx="232" cy="112" r="13" fill="#FFD9C4" stroke="#F0B9A0" stroke-width="2"/>
+  <circle class="hot" cx="88" cy="112" r="16"/><circle class="hot" cx="232" cy="112" r="16"/>
+</g>
+<g id="face-eyes"></g>
+<g id="face-mouth"></g>
+<g id="sweat"><path d="M222 72 q8 12 0 18 q-8 -6 0 -18Z" fill="#9ED8F5"/></g>
+<g class="part" data-region="eyes" tabindex="0" role="button" aria-label="눈 진찰"><rect class="hot" x="104" y="94" width="112" height="30" rx="14"/></g>
+<g class="part" data-region="nose" tabindex="0" role="button" aria-label="코 진찰"><ellipse cx="160" cy="132" rx="7" ry="5" fill="#FFC6AE"/><ellipse class="hot" cx="160" cy="132" rx="14" ry="9"/></g>
+<g class="part" data-region="mouth" tabindex="0" role="button" aria-label="입 진찰"><rect class="hot" x="140" y="144" width="40" height="24" rx="10"/></g>
+`;
+const EB='stroke="#3A2A24" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"';
+const EYES={
+ sick:`<path d="M112 112 Q124 118 136 112" ${EB}/><path d="M184 112 Q196 118 208 112" ${EB}/><path d="M110 100 L136 106 M210 100 L184 106" stroke="#3A2A24" stroke-width="3" stroke-linecap="round"/>`,
+ normal:'<circle cx="124" cy="110" r="8" fill="#3A2A24"/><circle cx="196" cy="110" r="8" fill="#3A2A24"/><circle cx="127" cy="107" r="3" fill="#fff"/><circle cx="199" cy="107" r="3" fill="#fff"/>',
+ surprised:'<circle cx="124" cy="109" r="10" fill="#3A2A24"/><circle cx="196" cy="109" r="10" fill="#3A2A24"/><circle cx="128" cy="105" r="4" fill="#fff"/><circle cx="200" cy="105" r="4" fill="#fff"/>',
+ ouch:`<path d="M114 102 L132 110 L114 118" ${EB}/><path d="M206 102 L188 110 L206 118" ${EB}/>`,
+ happy:`<path d="M112 114 Q124 100 136 114" ${EB}/><path d="M184 114 Q196 100 208 114" ${EB}/>`,
+ closed:`<path d="M112 110 Q124 118 136 110" ${EB}/><path d="M184 110 Q196 118 208 110" ${EB}/>`,
+};
+EYES.strain=EYES.ouch;EYES.ahh=EYES.normal;
+const MOUTH={
+ sick:'<path d="M144 156 q4 -5 8 0 q4 5 8 0 q4 -5 8 0 q4 5 8 0" stroke="#3A2A24" stroke-width="3.5" fill="none" stroke-linecap="round"/>',
+ normal:'<path d="M149 153 Q160 161 171 153" stroke="#3A2A24" stroke-width="3.5" fill="none" stroke-linecap="round"/>',
+ happy:'<path d="M147 151 Q160 167 173 151 Z" fill="#C95A6B"/>',
+ surprised:'<ellipse cx="160" cy="156" rx="7" ry="8" fill="#C95A6B"/>',
+ ouch:'<path d="M146 158 L152 152 L158 158 L164 152 L170 158 L176 152" stroke="#3A2A24" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+ strain:'<rect x="147" y="150" width="26" height="10" rx="4" fill="#fff" stroke="#3A2A24" stroke-width="3"/>',
+ closed:'<path d="M151 155 L169 155" stroke="#3A2A24" stroke-width="3.5" stroke-linecap="round"/>',
+ ahh:'<ellipse cx="160" cy="157" rx="12" ry="11" fill="#C95A6B"/><ellipse cx="160" cy="162" rx="7" ry="4" fill="#FF8FA0"/>',
+};
+
+/* ================= 유틸 ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function getBest(m,id){try{return +localStorage.getItem(`kongdak2-${m}-${id}`)||0}catch(e){return 0}}
+function setBest(m,id,v){try{localStorage.setItem(`kongdak2-${m}-${id}`,String(v))}catch(e){}}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0)}
+function lcs(a,b){const d=Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=a[i-1]===b[j-1]?d[i-1][j-1]+1:Math.max(d[i-1][j],d[i][j-1]);return d[a.length][b.length]}
+
+/* ================= 상태 ================= */
+let MODE='learn', S=null;
+const MODE_DESC={learn:'진찰 순서 암기법, 남은 체크리스트, 힌트, 소견별 해설이 보여요. 시간 제한은 없어요.',exam:'5분 안에 알아서 진찰하세요. 체크리스트와 해설은 끝난 뒤에 공개돼요.'};
+
+function renderStart(){
+  $('#scn-count').textContent=CASES.reduce((n,c)=>n+c.v.length,0);
+  const sym=$('#patient-sym');
+  sym.innerHTML=PATIENT_SVG.replace(/ class="part"[^>]*>/g,'>').replace(/<[^>]*class="hot"[^>]*\/>/g,'')
+    .replace('<g id="face-eyes"></g>','<g>'+EYES.sick+'</g>').replace('<g id="face-mouth"></g>','<g>'+MOUTH.sick+'</g>').replace(/ id="[^"]*"/g,'');
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===MODE)));
+  $('#mode-desc').textContent=MODE_DESC[MODE];
+  $('#case-groups').innerHTML=SYS_ORDER.map(sys=>{
+    const cs=CASES.filter(c=>c.sys===sys);
+    return `<div class="sys"><h3>${sys}</h3><div class="cases">`+cs.map(c=>{
+      const b=getBest(MODE,c.id);
+      return `<button class="case-chip ${b?'done':''}" data-case="${c.id}">${esc(c.t)}<small>시나리오 ${c.v.length}개 · ${b?`최고 ${b}점`:'도전 전'}</small></button>`;
+    }).join('')+'</div></div>';
+  }).join('');
+  document.querySelectorAll('.case-chip').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
+  show('s-start');
+}
+
+function openCase(id){
+  const c=CASES.find(x=>x.id===id);
+  let sc,k=0;do{sc=c.v[Math.floor(Math.random()*c.v.length)];k++}while(c.v.length>1&&S&&S.c===c&&S.sc===sc&&k<10);
+  const name=NAMES[Math.floor(Math.random()*NAMES.length)];
+  S={mode:MODE,c,sc,name,req:c.req?c.req.split(' ').filter(Boolean):[],done:{},seq:[],hand:false,handFirst:false,start:0,timer:null,limit:MODE==='exam'?300:0,over:false};
+  $('#c-name').textContent=`${name} 님`;
+  $('#c-who').textContent=`${sc.age}${typeof sc.age==='number'?'세':''} ${sc.sex}${typeof sc.age==='number'?'자':'아'}`;
+  $('#c-cc').textContent=c.t;
+  $('#c-story').textContent=`"${sc.story}"`;
+  const vb=$('#c-vitals');
+  if(sc.vit==='-'){vb.style.display='none'}else{
+    vb.style.display='';const v=sc.vit.split(','),lbl=['혈압','맥박','호흡','체온'];
+    vb.innerHTML=v.map((x,i)=>`<div><b>${x}</b><span>${lbl[i]}</span></div>`).join('');
+  }
+  $('#c-task').textContent='문진은 끝났어요. 이 환자에게 필요한 신체진찰을 암기법 순서대로 하고, 마지막 질문에 답해 주세요. 진찰 전 설명과 손 위생도 점수에 들어가요.';
+  $('#c-sens').hidden=!c.serious;
+  show('s-case');
+}
+function vitalsText(){const v=S.sc.vit.split(',');return `BP ${v[0]} mmHg, HR ${v[1]}회/분, RR ${v[2]}회/분, BT ${v[3]}℃`}
+function finding(id){
+  const ab=(S.sc.ab||{})[id];
+  if(ab)return{t:ab[0],ab:true,note:ab[1]||ITEMS[id].note,react:ab[2],expr:ab[3]};
+  if(id==='vs')return{t:vitalsText(),ab:false,note:ITEMS.vs.note};
+  return{t:ITEMS[id].normal,ab:false,note:ITEMS[id].note};
+}
+
+function startPlay(){
+  const svg=$('#patient');svg.innerHTML=PATIENT_SVG;
+  S.baseFace=(S.c.serious||S.c.gentle||S.c.noPE)?'normal':'sick';
+  setFace(S.baseFace);
+  svg.querySelectorAll('.part').forEach(p=>{
+    const r=p.dataset.region;
+    p.addEventListener('click',()=>openSheet(r));
+    p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openSheet(r)}});
+    p.addEventListener('mouseenter',()=>$('#hint-line').textContent=`${REGION_NAMES[r]} 진찰 목록 보기`);
+    p.addEventListener('mouseleave',()=>$('#hint-line').textContent='진찰할 부위를 눌러 보세요');
+  });
+  $('#p-mode').textContent=S.mode==='learn'?'📘 학습':'⏱️ 시험';
+  $('#p-case').textContent=`${S.name} · ${S.c.t}`;
+  $('#b-pt-name').textContent=S.name;
+  $('#hint').style.display=S.mode==='learn'?'':'none';
+  $('#chart-sub').textContent=S.mode==='learn'?'진찰한 순서대로 소견과 해설이 기록돼요':'진찰한 순서대로 소견이 기록돼요';
+  $('#mnemo-box').innerHTML=S.mode==='learn'?`<div class="mnemo"><b>암기법</b> ${esc(S.c.mn)}</div>`:'';
+  $('#log').innerHTML='<li class="empty" style="border:none;background:none">아직 기록이 없어요</li>';
+  $('#wash').disabled=false;$('#wash').textContent='🧼 손 위생';
+  $('#finish').textContent='진찰 끝내기';delete $('#finish').dataset.sure;
+  renderChecklist();
+  S.start=Date.now();clearInterval(S.timer);S.timer=setInterval(tick,250);tick();
+  show('s-play');
+  say('pt',S.c.serious?'…안녕하세요.':(S.baseFace==='sick'?'으… 잘 부탁드려요…':'안녕하세요, 잘 부탁드려요.'));
+}
+function tick(){
+  const el=(Date.now()-S.start)/1000,t=S.limit?Math.max(0,S.limit-el):el;
+  $('#p-timer').textContent=`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+  $('#p-timer').classList.toggle('warn',!!S.limit&&t<=60);
+  if(S.limit&&t<=0&&!S.over){closeSheet();say('pt','(시간 종료! 진찰을 마칩니다)');S.over=true;setTimeout(goDx,900)}
+}
+function setFace(expr){
+  const svg=$('#patient');
+  svg.querySelector('#face-eyes').innerHTML=EYES[expr];
+  svg.querySelector('#face-mouth').innerHTML=MOUTH[expr];
+  svg.querySelector('#sweat').style.display=(expr==='sick'||expr==='ouch'||expr==='strain')?'':'none';
+}
+const bubbleT={};
+function say(who,text){
+  const b=who==='doc'?$('#b-doc'):$('#b-pt');
+  b.querySelector('.tx').textContent=text;b.classList.add('show');
+  clearTimeout(bubbleT[who]);bubbleT[who]=setTimeout(()=>b.classList.remove('show'),3400);
+}
+let faceT=null;
+function react(text,expr){say('pt',text);setFace(expr);clearTimeout(faceT);faceT=setTimeout(()=>setFace(S.baseFace),2300)}
+
+function openSheet(region){
+  if(!S||S.over)return;
+  $('#sheet-title').textContent=`${REGION_NAMES[region]} 진찰`;
+  const items=Object.values(ITEMS).filter(i=>i.regions.includes(region));
+  $('#sheet-body').innerHTML=items.map(i=>{
+    if(S.done[i.id]){const f=finding(i.id);return `<div class="exam-row done"><div class="nm">✓ ${esc(i.name)}</div><div class="fd">${esc(f.t)}</div></div>`}
+    return `<div class="exam-row"><div class="nm">${esc(i.name)}</div><div class="btns">
+      <button class="btn small" data-do="${i.id}" data-ex="1">🗣️ 설명하고</button>
+      <button class="btn ghost small" data-do="${i.id}" data-ex="0">바로</button></div></div>`;
+  }).join('');
+  $('#sheet-body').querySelectorAll('[data-do]').forEach(b=>b.addEventListener('click',()=>{closeSheet();doExam(b.dataset.do,b.dataset.ex==='1')}));
+  $('#sheet-bg').classList.add('on');$('#sheet').classList.add('on');
+  ($('#sheet-body button')||$('#sheet-close')).focus();
+}
+function closeSheet(){$('#sheet-bg').classList.remove('on');$('#sheet').classList.remove('on')}
+
+function doExam(id,explained){
+  if(S.done[id]||S.over)return;
+  const it=ITEMS[id],f=finding(id),required=S.req.includes(id);
+  S.done[id]={explained,at:S.seq.length,required};S.seq.push(id);
+  const calm=S.c.serious||S.c.gentle;
+  let rtext=f.react||(calm?'네.':it.react),rexpr=f.expr||(calm?'normal':it.expr);
+  if(explained){say('doc',it.say);setTimeout(()=>react(rtext,rexpr),450)}
+  else{say('doc',`(말없이 ${it.name})`);setTimeout(()=>react(calm?'…!':'앗, 깜짝이야! 뭐 하시는 거예요?','surprised'),400)}
+  addLog(it,f,explained,required);renderChecklist();
+}
+function addLog(it,f,explained,required){
+  const log=$('#log'),e=log.querySelector('.empty');if(e)e.remove();
+  const learn=S.mode==='learn',li=document.createElement('li');
+  li.className=learn?(f.ab?'ab':(!required?'extra':'')):'';
+  const tags=(explained?'':'<span class="tag">설명 없이</span>')+(learn&&!required?'<span class="tag">이 증례 필수 항목 아님</span>':'');
+  li.innerHTML=`<b>${S.seq.length}. ${esc(it.name)}</b>${tags}<br>${esc(f.t)}${learn?`<span class="note">${f.ab?'⚠️ ':''}${esc(f.note)}</span>`:''}`;
+  log.prepend(li);
+}
+function renderChecklist(){
+  const box=$('#checklist-box');
+  if(S.mode!=='learn'){box.innerHTML='';return}
+  if(S.c.noPE){box.innerHTML='<div class="empty">이 증례는 신체진찰이 없어요. 바로 "진찰 끝내기"를 눌러도 돼요.</div>';return}
+  const cnt=S.req.filter(id=>S.done[id]).length;
+  box.innerHTML=`<div style="font-size:.9rem;margin-bottom:4px">필수 진찰 ${cnt}/${S.req.length} · 손 위생 ${S.hand?'✓':'아직'}</div><div class="check">`+
+    S.req.map(id=>`<span class="${S.done[id]?'done':''}">${esc(ITEMS[id].name)}</span>`).join('')+'</div>';
+}
+function wash(){
+  if(!S||S.hand||S.over)return;
+  S.hand=true;S.handFirst=S.seq.length===0;
+  $('#wash').disabled=true;$('#wash').textContent='🧼 손 위생 완료';
+  say('doc','(손을 깨끗이 소독했어요) 지금부터 진찰을 시작하겠습니다.');
+  setTimeout(()=>react('네.','normal'),450);
+  if(S.mode==='learn'){
+    const log=$('#log'),e=log.querySelector('.empty');if(e)e.remove();
+    const li=document.createElement('li');
+    li.innerHTML=`<b>손 위생</b>${S.handFirst?'':'<span class="tag">순서 늦음</span>'}<span class="note">${S.handFirst?'좋아요. 환자 접촉 전 손 위생은 CPX 기본 채점 항목이에요.':'손 위생은 환자를 만지기 전에 먼저 해야 해요.'}</span>`;
+    log.prepend(li);
+  }
+  renderChecklist();
+}
+function hint(){
+  if(S.c.noPE){$('#hint-line').textContent='💡 이 증례는 신체진찰이 없어요!';return}
+  if(!S.hand){$('#hint-line').textContent='💡 환자를 만지기 전에 손 위생부터!';return}
+  const next=S.req.find(id=>!S.done[id]);
+  if(!next){$('#hint-line').textContent='💡 필수 진찰을 모두 마쳤어요. "진찰 끝내기"를 눌러 보세요!';return}
+  const it=ITEMS[next];
+  $('#hint-line').textContent=`💡 다음은 ${REGION_NAMES[it.regions[0]]} → ${it.name}`;
+}
+
+function goDx(){
+  clearInterval(S.timer);S.over=true;closeSheet();
+  S.elapsed=Math.round((Date.now()-S.start)/1000);
+  $('#dx-q').textContent=S.c.q||'가장 가능성 높은 진단은?';
+  $('#dx-sub').textContent=`${S.name} 님 · ${S.c.t}`;
+  const answer=S.sc.dx||S.c.dx;
+  const opts=shuffle([answer,...shuffle(S.c.pool.filter(o=>o!==answer)).slice(0,4)]);
+  $('#dx-list').innerHTML=opts.map((d,i)=>`<button data-i="${i}">${esc(d)}</button>`).join('');
+  $('#dx-list').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>result(opts[+b.dataset.i])));
+  show('s-dx');
+}
+function result(pick){
+  const c=S.c,sc=S.sc,answer=sc.dx||c.dx,sum=sc.sum||c.sum;
+  const performed=S.seq,extras=performed.filter(id=>!S.req.includes(id)),reqDone=performed.filter(id=>S.req.includes(id));
+  let itemsPts,orderPts,expPts,handPts;
+  if(c.noPE){
+    itemsPts=Math.max(0,50-performed.length*10);orderPts=performed.length?0:10;expPts=15;handPts=5;
+  }else{
+    itemsPts=Math.round(reqDone.length/S.req.length*50);
+    orderPts=reqDone.length>=2?Math.round(lcs(reqDone,S.req)/reqDone.length*10):0;
+    expPts=performed.length?Math.round(performed.filter(id=>S.done[id].explained).length/performed.length*15):0;
+    handPts=S.hand&&S.handFirst?5:(S.hand?2:0);
+  }
+  const extraPen=c.noPE?0:Math.min(10,extras.length*2);
+  const dxOk=pick===answer,dxPts=dxOk?20:0;
+  const total=Math.max(0,itemsPts+orderPts+expPts+handPts+dxPts-extraPen);
+  const prev=getBest(S.mode,c.id);if(total>prev)setBest(S.mode,c.id,total);
+
+  $('#r-score').innerHTML=`${total}<small> / 100</small>`;
+  $('#r-msg').textContent=(total>=90?'완벽해요! 이 증례는 마스터 🎉':total>=75?'잘했어요! 빠진 부분만 챙기면 돼요.':total>=50?'절반은 넘었어요. 순서를 다시 훑어봐요.':'아직 연습이 필요해요. 학습 모드로 한 번 더!')+(prev&&total>prev?' 최고 기록 갱신!':'');
+  const bars=[['진찰 항목',itemsPts,50],['진찰 순서',orderPts,10],['환자 설명',expPts,15],['손 위생',handPts,5],['판단',dxPts,20]];
+  $('#r-bars').innerHTML=bars.map(([n,p,m])=>`<div class="bar"><span>${n}</span><div class="track"><div class="fill" data-w="${p/m*100}"></div></div><span class="v">${p}/${m}</span></div>`).join('')+
+    (extraPen?`<div class="bar"><span>불필요한 진찰</span><div></div><span class="v" style="color:var(--alert)">−${extraPen}</span></div>`:'')+
+    `<div style="text-align:center;color:var(--muted);font-size:.9rem">소요 시간 ${Math.floor(S.elapsed/60)}분 ${S.elapsed%60}초</div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w+'%')));
+
+  $('#r-dx').innerHTML=`<h3>${dxOk?'✅ 정답':'❌ 오답'}</h3><p>정답: <b>${esc(answer)}</b>${dxOk?'':`<br>내가 고른 답: ${esc(pick)}`}</p><p style="color:var(--muted)">${esc(sum)}</p>`;
+
+  const notes=[];
+  notes.push(`<p><b>암기법</b></p><div class="seq">${esc(c.mn)}</div>`);
+  if(!c.noPE){
+    notes.push(`<p><b>이 증례의 진찰 순서</b></p><div class="seq">${S.req.map(id=>esc(ITEMS[id].name)).join(' → ')}</div>`);
+    notes.push(`<p><b>내가 한 순서</b></p><div class="seq">${performed.length?performed.map(id=>esc(ITEMS[id].name)+(S.req.includes(id)?'':' (불필요)')).join(' → '):'진찰하지 않았어요'}</div>`);
+    if(!S.hand)notes.push('<p>손 위생을 하지 않았어요. 환자 접촉 전 손 위생은 기본 채점 항목이에요.</p>');
+    else if(!S.handFirst)notes.push('<p>손 위생을 했지만 이미 환자를 진찰한 뒤였어요.</p>');
+    const noExp=performed.filter(id=>!S.done[id].explained);
+    if(noExp.length)notes.push(`<p>설명 없이 진찰한 항목: ${noExp.map(i=>esc(ITEMS[i].name)).join(', ')}</p>`);
+    if(extras.length)notes.push(`<p>이 증례 암기법에 없는 진찰: ${extras.map(i=>esc(ITEMS[i].name)).join(', ')}. 실제 시험에서는 시간을 잡아먹어요.</p>`);
+  }else{
+    notes.push(performed.length?`<p>이 증례는 신체진찰이 없어요. 진찰 ${performed.length}개를 해서 감점됐어요.</p>`:'<p>신체진찰 없이 바로 넘어갔어요. 👍</p>');
+  }
+  $('#r-order').innerHTML='<h3>순서와 태도</h3>'+notes.join('');
+
+  if(c.noPE){$('#r-table-panel').style.display='none'}else{
+    $('#r-table-panel').style.display='';
+    $('#r-table').innerHTML='<tr><th>항목</th><th>수행</th><th>소견</th><th>해설</th></tr>'+S.req.map(id=>{
+      const f=finding(id),d=S.done[id];
+      return `<tr class="${f.ab?'abrow':''}"><td>${esc(ITEMS[id].name)}</td><td class="${d?'':'miss'}">${d?(d.explained?'✓':'✓ (설명 없음)'):'놓침'}</td><td>${f.ab?'⚠️ ':''}${esc(f.t)}</td><td style="color:var(--muted)">${esc(f.note)}</td></tr>`;
+    }).join('');
+  }
+  show('s-result');
+}
+
+/* ================= 이벤트 ================= */
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{MODE=b.dataset.mode;renderStart()}));
+$('#random').addEventListener('click',()=>openCase(CASES[Math.floor(Math.random()*CASES.length)].id));
+$('#back-list').addEventListener('click',renderStart);
+$('#go-play').addEventListener('click',startPlay);
+document.querySelectorAll('.tools [data-region]').forEach(b=>b.addEventListener('click',()=>openSheet(b.dataset.region)));
+$('#sheet-bg').addEventListener('click',closeSheet);
+$('#sheet-close').addEventListener('click',closeSheet);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+$('#wash').addEventListener('click',wash);
+$('#hint').addEventListener('click',hint);
+$('#finish').addEventListener('click',()=>{
+  const b=$('#finish'),left=S.req.filter(id=>!S.done[id]).length;
+  if(S.mode==='learn'&&left&&!b.dataset.sure){b.dataset.sure='1';b.textContent=`${left}개 남음, 정말 끝내기`;setTimeout(()=>{delete b.dataset.sure;b.textContent='진찰 끝내기'},3000);return}
+  goDx();
+});
+$('#again').addEventListener('click',()=>{MODE=S.mode;openCase(S.c.id)});
+$('#next-rand').addEventListener('click',()=>{MODE=S.mode;let c;do{c=CASES[Math.floor(Math.random()*CASES.length)]}while(c.id===S.c.id);openCase(c.id)});
+$('#home').addEventListener('click',()=>{MODE=S.mode;renderStart()});
+renderStart();
+</script>
+</body>
+</html>
